@@ -3,7 +3,8 @@
 A single-page, no-build portfolio: hand-written HTML, CSS and vanilla JavaScript.
 Dark, high-contrast editorial layout with an acid-lime accent, a canvas flow
 field in the hero, scroll-reveal sections, animated stat counters, a custom
-cursor and a marquee ticker.
+cursor and a marquee ticker. A small GSAP/ScrollTrigger layer adds the cinematic
+entrance, pinned project showcases and pointer tilt.
 
 The page opens on a full-screen welcome: a spotlight portrait sits beside your
 name, and as you scroll it slides right, shrinks into the portrait frame and
@@ -35,7 +36,9 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 | --- | --- |
 | `index.html` | All content and structure: hero, about, projects, experience, education, awards, toolkit, contact. |
 | `styles.css` | The whole visual system — design tokens at the top, then sections, responsive rules, reduced-motion and print styles. |
-| `script.js` | Hero canvas and the welcome→portrait scroll morph, reveals, counters, mobile menu, custom cursor, tilt/magnetic effects, copy-email button, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow and the contact form. |
+| `script.js` | Hero canvas and the welcome→portrait scroll morph, reveals, counters, mobile menu, custom cursor, magnetic buttons, copy-email button, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow, anchor scrolling and the contact form. |
+| `motion.js` | Optional cinematic layer: GSAP entrance, section cues, pinned showcases, scroll-driven figure scenes, pointer tilt. Safe to remove — the page falls back to its CSS motion. |
+| `assets/vendor/` | Vendored `gsap.min.js` and `ScrollTrigger.min.js` (3.13.0), so the page loads no third-party script at runtime. |
 | `assets/portrait.jpg` | 933 × 1100 web-optimised portrait (plus `portrait-640.jpg` for small screens). |
 | `assets/welcome.jpg` | The full-body spotlight photo used on the welcome screen (and as the portrait on phones). |
 | `assets/welcome-mobile.jpg` | 900 px version of the same photo for small screens. |
@@ -71,6 +74,8 @@ section you want:
   entries in the inline icon sprite at the top of `<body>`; add a 24×24 symbol there
   to add a logo. `.stack__tag` is the count and `.stack__tools` is the expanded row.
 - `<!-- ============ CONTACT ============ -->` — email, phone, GitHub, LinkedIn, location.
+  The headline's `.line` elements are masks; keep the inner `<span>` so the outline
+  style and the masked rise continue to work.
 
 ### Refreshing a project from GitHub
 
@@ -117,6 +122,60 @@ form submissions to you — no server needed.
 Until a key is present, the form is not dead: JavaScript opens the visitor's mail
 app with the subject and message already filled in, addressed to you.
 
+## Motion
+
+`motion.js` is a separate, optional layer on top of `script.js`, built with
+GSAP 3.13 and ScrollTrigger (vendored in `assets/vendor/`, so the page makes no
+third-party requests). It loads with `defer` after the base script.
+
+- **Hero entrance** — the name lines lift out of their masks in sequence, the
+  eyebrow and nav settle, and the spotlight photo wipes open from the top. On
+  phones, where the welcome morph is not used, the portrait and lede join the
+  same stagger.
+- **Section cues** — each `.section__head` arrives as one beat: the number, the
+  title, then the rule drawing across with a short acid glow that burns off.
+- **Showcases** — on screens at least 981 px wide and 780 px tall, each
+  `.feature` pins at a centred stage while its figure settles and switches from
+  the live animation to the static evidence at the halfway point. A card has to
+  fit the viewport; if it does not, it gets the unpinned treatment. Below those
+  sizes the figure still zooms and changes scene as it crosses the screen, with
+  no pin.
+- **Cards** — the mini cards and project figures tilt a few degrees toward the
+  pointer, and project images zoom slightly on hover.
+- **Closing** — the contact headline masks up and the email settles in.
+
+The section cues and the closing headline are fired by `IntersectionObserver`,
+not ScrollTrigger. Pinning adds height to the document while ScrollTrigger is
+measuring, so a trigger created before the pins can keep a stale start position;
+the observer always reads the element's live box.
+
+The figure tabs still belong to `script.js`. The motion layer only asks for a
+scene through `portfolio:scene` events and holds autoplay with `portfolio:hold`
+while scroll is in charge. Clicking a tab yourself always wins.
+
+Tuning lives in `motion.js`: `PIN_MARGIN`, the `+=72%` pin length, the
+`center center` stage start and the tilt maxima in the two `attachTilt` calls.
+The pinned stage centres itself, so changes to the nav height need no offset.
+
+Motion is never required:
+
+- `prefers-reduced-motion: reduce` skips the layer entirely — no tweens, pins or
+  tilt are created, and the CSS entrance still runs.
+- If GSAP or ScrollTrigger is missing, `motion.js` releases the hero immediately
+  and the original CSS entrance takes over.
+- The small `<script>` in `<head>` only arms `motion-pending` when motion is
+  welcome, and removes it after 2.5 s even if the layer never loads.
+- Without JavaScript nothing is hidden: section headings are plain text and all
+  content stays in the HTML.
+
+Smooth anchor scrolling lives in `script.js` rather than
+`html { scroll-behavior: smooth }`, because ScrollTrigger has to measure pins on
+a document that is not animating its own scroll position. Anchors still glide,
+and reduced-motion visitors jump straight there.
+
+GSAP is used under its standard licence; the minified files are checked in so
+the site stays a no-build static page.
+
 ## Changing the look
 
 All colours, fonts and spacing live in `:root` at the top of `styles.css`:
@@ -132,7 +191,8 @@ Fonts are loaded from Google Fonts in `<head>`. To go fully offline, download
 the families and swap the `<link>` for local `@font-face` rules.
 
 If you change the accent colour, also update the canvas trail colours in
-`script.js` (`draw()`, the `rgba(204,255,0,…)` values).
+`script.js` (`draw()`, the `rgba(204,255,0,…)` values) and the glow colours in
+`motion.js` (the section rule and showcase `boxShadow` strings).
 
 ## Deploying
 
@@ -142,8 +202,8 @@ It is a static site, so anything that serves files will do:
   root directory.
 - **Netlify / Vercel / Cloudflare Pages** — drag the folder in, or connect the repo
   with no build command and `.` as the publish directory.
-- **Any web host** — upload `index.html`, `styles.css`, `script.js` and `assets/`
-  to the same directory.
+- **Any web host** — upload `index.html`, `styles.css`, `script.js`, `motion.js`
+  and `assets/` (including `assets/vendor/`) to the same directory.
 
 After you have a real URL, add it back to `<head>` for clean sharing:
 
@@ -159,8 +219,10 @@ After you have a real URL, add it back to `<head>` for clean sharing:
   is all in the HTML. Without JS you lose the canvas, welcome morph, reveal
   animations and counters, and the toolkit dial is hidden (the category list
   remains). The contact form falls back to a `mailto:` post.
-- `prefers-reduced-motion` is respected, and `.reveal` elements are fully
-  readable when motion is reduced.
+- `prefers-reduced-motion` is respected: the motion layer is skipped entirely
+  (no tweens, pins or tilt), the CSS entrance runs, and `.reveal` elements are
+  fully readable.
 - The phone number and email are intentionally public and clickable (`tel:` and
   `mailto:`). Remove them from the contact section if you'd rather not publish them.
-- There is no analytics or third-party script beyond Google Fonts.
+- There is no analytics and no third-party script at runtime beyond Google
+  Fonts. GSAP is vendored locally in `assets/vendor/`.

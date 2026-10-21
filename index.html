@@ -21,6 +21,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 
+<!-- Arm the JavaScript-driven entrance only when motion is welcome. If the
+     motion layer fails to load, it removes this class and the CSS entrance
+     takes over, so nothing is ever left hidden. -->
+<script>
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    document.documentElement.classList.add("motion-pending");
+    // failsafe: if the motion layer never arrives, hand the page back to CSS
+    window.setTimeout(function () {
+      document.documentElement.classList.remove("motion-pending");
+    }, 2500);
+  }
+</script>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -222,7 +235,7 @@
 
   <!-- ============ ABOUT ============ -->
   <section class="section" id="about">
-    <div class="section__head reveal">
+    <div class="section__head">
       <span class="section__num mono-label">01</span>
       <h2 class="section__title">About</h2>
       <span class="section__rule" aria-hidden="true"></span>
@@ -293,7 +306,7 @@
 
   <!-- ============ WORK ============ -->
   <section class="section section--work" id="projects">
-    <div class="section__head reveal">
+    <div class="section__head">
       <span class="section__num mono-label">02</span>
       <h2 class="section__title">Projects</h2>
       <span class="section__rule" aria-hidden="true"></span>
@@ -503,7 +516,7 @@
 
   <!-- ============ EXPERIENCE ============ -->
   <section class="section" id="experience">
-    <div class="section__head reveal">
+    <div class="section__head">
       <span class="section__num mono-label">03</span>
       <h2 class="section__title">Experience</h2>
       <span class="section__rule" aria-hidden="true"></span>
@@ -581,7 +594,7 @@
 
   <!-- ============ EDUCATION ============ -->
   <section class="section" id="education">
-    <div class="section__head reveal">
+    <div class="section__head">
       <span class="section__num mono-label">04</span>
       <h2 class="section__title">Education</h2>
       <span class="section__rule" aria-hidden="true"></span>
@@ -622,7 +635,7 @@
 
   <!-- ============ AWARDS ============ -->
   <section class="section" id="awards">
-    <div class="section__head reveal">
+    <div class="section__head">
       <span class="section__num mono-label">05</span>
       <h2 class="section__title">Awards &amp; publications</h2>
       <span class="section__rule" aria-hidden="true"></span>
@@ -674,7 +687,7 @@
 
   <!-- ============ TOOLKIT ============ -->
   <section class="section section--toolkit" id="toolkit">
-    <div class="section__head reveal">
+    <div class="section__head">
       <span class="section__num mono-label">06</span>
       <h2 class="section__title">Toolkit</h2>
       <span class="section__rule" aria-hidden="true"></span>
@@ -749,8 +762,8 @@
       </p>
 
       <h2 class="contact__title reveal">
-        <span class="line">Let’s build</span>
-        <span class="line line--outline">something fast.</span>
+        <span class="line"><span>Let’s build</span></span>
+        <span class="line line--outline"><span>something fast.</span></span>
       </h2>
 
       <div class="contact__grid reveal" data-delay="1">
@@ -845,5 +858,11 @@
 </footer>
 
 <script src="script.js"></script>
+
+<!-- Cinematic layer: GSAP + ScrollTrigger, vendored locally so the site stays
+     free of third-party requests. Everything it does is optional polish. -->
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="motion.js" defer></script>
 </body>
 </html>
