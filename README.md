@@ -7,10 +7,11 @@ cursor and a marquee ticker. A small GSAP/ScrollTrigger layer adds the cinematic
 entrance, pinned project showcases and pointer tilt.
 
 The page opens on a full-screen welcome: a spotlight portrait sits beside your
-name, and as you scroll it slides right, shrinks into the portrait frame and
-dissolves into the headshot, while the intro copy fades in. Below that, projects
-animate in place, the toolkit is a radial map of tool logos, and the contact
-block has a working message form.
+name, and as you scroll it slides right, shrinks into the photo window of a
+hanging ID badge and dissolves into the headshot, while the intro copy fades in.
+The badge can be flipped by clicking it. Below that, projects animate in place,
+the toolkit is a radial map of tool logos, and the contact block has a working
+message form followed by bare icon links to email, phone, GitHub and LinkedIn.
 
 The projects section is built from the public GitHub repositories of
 [janaarundinesh](https://github.com/janaarundinesh): two featured projects with
@@ -36,12 +37,12 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 | --- | --- |
 | `index.html` | All content and structure: hero, about, projects, experience, education, awards, toolkit, contact. |
 | `styles.css` | The whole visual system — design tokens at the top, then sections, responsive rules, reduced-motion and print styles. |
-| `script.js` | Hero canvas and the welcome→portrait scroll morph, reveals, counters, mobile menu, the experience card accordion, custom cursor, magnetic buttons, copy-email button, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow, anchor scrolling and the contact form. |
+| `script.js` | Hero canvas and the welcome→badge scroll morph, the ID badge flip, reveals, counters, mobile menu, the experience card accordion, custom cursor, magnetic buttons, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow, anchor scrolling and the contact form. |
 | `motion.js` | Optional cinematic layer: GSAP entrance, section cues, the experience-card stagger, pinned showcases, scroll-driven figure scenes, pointer tilt. Safe to remove — the page falls back to its CSS motion. |
 | `assets/vendor/` | Vendored `gsap.min.js` and `ScrollTrigger.min.js` (3.13.0), so the page loads no third-party script at runtime. |
 | `assets/portrait.jpg` | 933 × 1100 web-optimised portrait (plus `portrait-640.jpg` for small screens). |
-| `assets/welcome.jpg` | The full-body spotlight photo used on the welcome screen (and as the portrait on phones). |
-| `assets/welcome-mobile.jpg` | 900 px version of the same photo for small screens. |
+| `assets/welcome.jpg` | The full-body spotlight photo used on the welcome screen. |
+| `assets/welcome-mobile.jpg` | Optional 900 px version of the welcome photo; the page no longer requests it. |
 | `assets/Arun_Dinesh_Jana_CV.pdf` | The downloadable CV linked from the hero. |
 | `assets/projects/` | Figures pulled from the GitHub repos: `thesis-runtime-5d.jpg`, `fhp-flow.jpg`, plus the derived animation frames `fhp-thermal.webp` and the filter stills in `assets/projects/filter-*.jpg`. |
 | `screenshots/` | Reference captures of the finished layout. Safe to delete. |
@@ -52,10 +53,12 @@ Everything is plain text in `index.html`, in reading order. Search for the
 section you want:
 
 - `<!-- ============ WELCOME + HERO ============ -->` — the opening screen. `.welcome` holds
-  the spotlight photo; the hero copy and the real portrait sit underneath it. The
-  scroll morph is measured from the portrait's frame, so changing the copy or the
-  portrait size does not break it. On screens under 981 px the morph is skipped
-  and the welcome photo becomes the portrait (via `<picture>`).
+  the spotlight photo; the hero copy and the ID badge sit underneath it. The scroll
+  morph targets `.hero__portrait-frame`, the photo window inside the badge, using
+  the frame's on-screen centre, so the nested card and its tilt do not break it.
+  `.hero__badge-flip` covers the card and toggles `.is-flipped`; the lanyard and
+  clip are decorative siblings of the flipping card. On screens under 981 px the
+  morph is skipped and the badge is the hero portrait on its own.
 - `<!-- ============ ABOUT ============ -->` — statement, facts column, four stat counters.
   Counter values live in `data-count` (and optional `data-suffix`).
 - `<!-- ============ PROJECTS ============ -->` — two `.feature` articles (text + figure)
@@ -65,8 +68,9 @@ section you want:
   static evidence); `data-interval` sets how long each tab holds, and the tabs
   only rotate while the figure is on screen.
 - `<!-- ============ EXPERIENCE ============ -->` — one `<article class="xp-card">` per role,
-  newest first. The left half is a decorative CSS scene (scope, terminal, marketplace,
-  turbine) and the right half holds the title and the toggle. Each card's detail block
+  newest first. The left half is a decorative CSS scene (a road with a car and its
+  sensor cone, a terminal, a marketplace grid, a turbine) and the right half holds
+  the title and the toggle. Each card's detail block
   has an `id` matched by the toggle's `aria-controls`; the toggle's `[data-xp-label]`
   text is swapped between "Details" and "Close" in `script.js`. Hovering previews a
   card, clicking pins it open, Escape closes it.
@@ -77,8 +81,9 @@ section you want:
   draws one ring per item and one chip per slug. The slugs point at `<symbol id="lg-…">`
   entries in the inline icon sprite at the top of `<body>`; add a 24×24 symbol there
   to add a logo. `.stack__tag` is the count and `.stack__tools` is the expanded row.
-- `<!-- ============ CONTACT ============ -->` — email and the message form, plus three
-  linked icon tiles (phone, GitHub, LinkedIn) built from the sprite symbols. The
+- `<!-- ============ CONTACT ============ -->` — the message form (headed "Get in
+  touch") plus four bare icon links — email, phone, GitHub, LinkedIn — centred
+  above the closing marquee and built from the sprite symbols. The
   headline's `.line` elements are masks; keep the inner `<span>` so the outline
   style and the masked rise continue to work.
 
@@ -110,8 +115,8 @@ Projects with no repository (the B.E. accident-detection system) use
 To replace the portrait, export a new image at roughly a 4:5 ratio (1100 px tall
 is plenty) to `assets/portrait.jpg`, and optionally a ~640 px wide version to
 `assets/portrait-640.jpg`. Keep the `width`/`height` attributes on the `<img>`
-in sync. The welcome photo is `assets/welcome.jpg` (any tall portrait crop works);
-keep `assets/welcome-mobile.jpg` as its smaller copy.
+in sync. The badge crops the photo to a 4:5 window, so keep the face centred near
+the top. The welcome photo is `assets/welcome.jpg` (any tall portrait crop works).
 
 ### Turning on the contact form
 
@@ -147,7 +152,7 @@ third-party requests). It loads with `defer` after the base script.
   no pin.
 - **Cards** — the mini cards and project figures tilt a few degrees toward the
   pointer, and project images zoom slightly on hover.
-- **Closing** — the contact headline masks up and the email settles in.
+- **Closing** — the contact headline masks up and the form settles in.
 
 The section cues and the closing headline are fired by `IntersectionObserver`,
 not ScrollTrigger. Pinning adds height to the document while ScrollTrigger is
