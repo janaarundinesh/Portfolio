@@ -552,7 +552,7 @@
     };
     requestAnimationFrame(loop);
 
-    const hoverables = "a, button, .project, .stat, .xp, .cred, [data-tilt]";
+    const hoverables = "a, button, .project, .stat, .xp-card, .cred, [data-tilt]";
     document.addEventListener("pointerover", (event) => {
       if (event.target.closest(hoverables)) document.body.classList.add("cursor-active");
     });
@@ -1256,6 +1256,90 @@
     } else {
       inView = true;
     }
+  }
+
+  /* ----------------------------------------------------------------------
+     Experience cards
+     Hover previews a role, the button pins it open so it survives the
+     pointer leaving. One card is open at a time, and Escape closes it.
+     ---------------------------------------------------------------------- */
+  const xpCards = Array.from(document.querySelectorAll("[data-xp]"));
+
+  if (xpCards.length) {
+    const hoverMedia = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let pinned = null;
+    // Set after an explicit close so the pointer still resting on the card
+    // does not immediately preview it again. Cleared when the pointer leaves.
+    let suppressed = null;
+
+    // "Close" only when the card is pinned. A hover preview still reads
+    // "Details" — clicking then pins it, which is what the button promises.
+    const setOpen = (card, open) => {
+      card.classList.toggle("is-open", open);
+      const toggle = card.querySelector(".xp-card__toggle");
+      const label = card.querySelector("[data-xp-label]");
+      if (toggle) toggle.setAttribute("aria-expanded", String(open));
+      if (label) label.textContent = card === pinned ? "Close" : "Details";
+    };
+
+    xpCards.forEach((card) => {
+      const toggle = card.querySelector(".xp-card__toggle");
+      if (!toggle) return;
+
+      // pointermove rather than pointerenter: browsers re-run hover hit-testing
+      // when the page scrolls, and a card that expands under a resting cursor
+      // would shift the content mid-scroll. A real movement is the signal.
+      card.addEventListener("pointermove", (event) => {
+        if (!hoverMedia.matches) return;
+        if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+        if (pinned && pinned !== card) return;
+        if (suppressed === card) return;
+        if (card.classList.contains("is-open")) return;
+        setOpen(card, true);
+      });
+
+      card.addEventListener("pointerleave", () => {
+        if (suppressed === card) suppressed = null;
+        if (!hoverMedia.matches) return;
+        if (card === pinned) return;
+        setOpen(card, false);
+      });
+
+      toggle.addEventListener("click", () => {
+        if (pinned === card) {
+          pinned = null;
+          suppressed = card;
+          setOpen(card, false);
+          return;
+        }
+        if (pinned) setOpen(pinned, false);
+        pinned = card;
+        suppressed = null;
+        setOpen(card, true);
+      });
+
+      card.addEventListener("focusin", () => {
+        if (pinned && pinned !== card) return;
+        setOpen(card, true);
+      });
+
+      card.addEventListener("focusout", (event) => {
+        if (card === pinned) return;
+        if (card.contains(event.relatedTarget)) return;
+        setOpen(card, false);
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !pinned) return;
+      const card = pinned;
+      pinned = null;
+      // Move focus first: the focusin handler would otherwise reopen the card.
+      const toggle = card.querySelector(".xp-card__toggle");
+      if (toggle && document.activeElement !== toggle) toggle.focus();
+      suppressed = card;
+      setOpen(card, false);
+    });
   }
 
   /* ----------------------------------------------------------------------
