@@ -9,9 +9,10 @@ entrance, pinned project showcases and pointer tilt.
 The page opens on a full-screen welcome: a spotlight portrait sits beside your
 name, and as you scroll it slides right, shrinks into the photo window of a
 hanging ID badge and dissolves into the headshot, while the intro copy fades in.
-The badge can be flipped by clicking it. Below that, projects animate in place,
-the toolkit is a radial map of tool logos, and the contact block has a working
-message form followed by bare icon links to email, phone, GitHub and LinkedIn.
+The badge can be flipped by clicking it. Below that, the experience cards open
+in place, projects animate underneath them, the toolkit is a radial map of tool
+logos, and the contact block has a working message form followed by bare icon
+links to email, phone, GitHub and LinkedIn.
 
 The projects section is built from the public GitHub repositories of
 [janaarundinesh](https://github.com/janaarundinesh): two featured projects with
@@ -35,7 +36,7 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | All content and structure: hero, about, projects, experience, education, awards, toolkit, contact. |
+| `index.html` | All content and structure: hero, about, experience, projects, education, awards, toolkit, contact. |
 | `styles.css` | The whole visual system — design tokens at the top, then sections, responsive rules, reduced-motion and print styles. |
 | `script.js` | Hero canvas and the welcome→badge scroll morph, the ID badge flip, reveals, counters, mobile menu, the experience card accordion, custom cursor, magnetic buttons, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow, anchor scrolling and the contact form. |
 | `motion.js` | Optional cinematic layer: GSAP entrance, section cues, the experience-card stagger, pinned showcases, scroll-driven figure scenes, pointer tilt. Safe to remove — the page falls back to its CSS motion. |
@@ -61,12 +62,6 @@ section you want:
   morph is skipped and the badge is the hero portrait on its own.
 - `<!-- ============ ABOUT ============ -->` — statement, facts column, four stat counters.
   Counter values live in `data-count` (and optional `data-suffix`).
-- `<!-- ============ PROJECTS ============ -->` — two `.feature` articles (text + figure)
-  and a `.more__grid` of three `.mini` cards. Each featured project links to its
-  repository with `.repo-link`; each mini card is itself an `<a>` pointing at the repo.
-  The figure panels use `data-media` with two tabs (the live animation and the
-  static evidence); `data-interval` sets how long each tab holds, and the tabs
-  only rotate while the figure is on screen.
 - `<!-- ============ EXPERIENCE ============ -->` — one `<article class="xp-card">` per role,
   newest first. The left half is a decorative CSS scene (a road with a car and its
   sensor cone, a terminal, a marketplace grid, a turbine) and the right half holds
@@ -74,6 +69,12 @@ section you want:
   has an `id` matched by the toggle's `aria-controls`; the toggle's `[data-xp-label]`
   text is swapped between "Details" and "Close" in `script.js`. Hovering previews a
   card, clicking pins it open, Escape closes it.
+- `<!-- ============ PROJECTS ============ -->` — two `.feature` articles (text + figure)
+  and a `.more__grid` of three `.mini` cards. Each featured project links to its
+  repository with `.repo-link`; each mini card is itself an `<a>` pointing at the repo.
+  The figure panels use `data-media` with two tabs (the live animation and the
+  static evidence); `data-interval` sets how long each tab holds, and the tabs
+  only rotate while the figure is on screen.
 - `<!-- ============ EDUCATION ============ -->` — one `.edu__row` per degree.
 - `<!-- ============ AWARDS ============ -->` — publications and awards side by side.
 - `<!-- ============ TOOLKIT ============ -->` — a `.stack` block. Each `.stack__item`

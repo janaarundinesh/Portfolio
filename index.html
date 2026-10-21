@@ -14,7 +14,7 @@
 <meta property="og:image" content="assets/portrait.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2307080A'/%3E%3Ctext x='32' y='44' font-family='Helvetica,Arial,sans-serif' font-size='30' font-weight='700' fill='%23CCFF00' text-anchor='middle'%3EAJ%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2307080A'/%3E%3Ctext x='32' y='44' font-family='Helvetica,Arial,sans-serif' font-size='30' font-weight='700' fill='%23CCFF00' text-anchor='middle'%3EAD%3C/text%3E%3C/svg%3E" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -96,14 +96,14 @@
 
 <header class="nav" data-nav>
   <a class="brand" href="#top" aria-label="Arun Dinesh Jana — home">
-    <span class="brand__mark">AJ</span>
+    <span class="brand__mark">AD</span>
     <span class="brand__name">Arun Dinesh Jana</span>
   </a>
 
   <nav class="nav__links" aria-label="Section navigation">
     <a href="#about">About</a>
-    <a href="#projects">Projects</a>
     <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
     <a href="#education">Education</a>
     <a href="#awards">Awards</a>
     <a href="#toolkit">Toolkit</a>
@@ -124,8 +124,8 @@
 <div class="menu" id="mobile-menu" data-menu hidden>
   <nav aria-label="Mobile navigation">
     <a href="#about"><span>01</span> About</a>
-    <a href="#projects"><span>02</span> Projects</a>
-    <a href="#experience"><span>03</span> Experience</a>
+    <a href="#experience"><span>02</span> Experience</a>
+    <a href="#projects"><span>03</span> Projects</a>
     <a href="#education"><span>04</span> Education</a>
     <a href="#awards"><span>05</span> Awards</a>
     <a href="#toolkit"><span>06</span> Toolkit</a>
@@ -345,220 +345,10 @@
     </div>
   </section>
 
-  <!-- ============ WORK ============ -->
-  <section class="section section--work" id="projects">
-    <div class="section__head">
-      <span class="section__num mono-label">02</span>
-      <h2 class="section__title">Projects</h2>
-      <span class="section__rule" aria-hidden="true"></span>
-    </div>
-
-    <div class="featured">
-
-      <article class="feature reveal">
-        <div class="feature__body">
-          <div class="meta">
-            <span class="tag">Master’s thesis</span>
-            <span class="tag tag--ghost">Computational geometry</span>
-            <span class="year">2026</span>
-          </div>
-          <h3 class="feature__title">Non-Dominance Filtering in Parallel</h3>
-          <p class="feature__sub">
-            Computing the skyline of large point sets in five to ten dimensions — and
-            benchmarking hard enough to tell a better algorithm from a faster machine.
-          </p>
-          <ul class="bullets">
-            <li>Implemented <strong>MAXIMA2</strong> and its recursive <strong>FILTER</strong> merge step, including a linear-time 2D sweep base case, in C++17, with a brute-force fallback when a split cannot separate the points.</li>
-            <li>Validated it against <strong>13 hand-built datasets</strong> and benchmarked it against an O(N²·d) brute-force baseline across dimensions 5–10.</li>
-            <li>Built three MPI strategies — ring, fan-in/fan-out and marry-go-round — measuring speed-up and parallel efficiency from 1 to 20 ranks.</li>
-            <li>Wrote the thesis report and plotting pipeline, keeping algorithmic efficiency separate from parallelisation effects.</li>
-          </ul>
-          <div class="feature__foot">
-            <ul class="chips">
-              <li>C++17</li><li>MPI</li><li>CMake</li><li>Benchmarking</li>
-            </ul>
-            <a class="repo-link" href="https://github.com/janaarundinesh/non-dominated-points" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" fill="currentColor"/></svg>
-              View on GitHub
-            </a>
-          </div>
-        </div>
-        <figure class="feature__figure">
-          <div class="media" data-media data-interval="11000">
-            <div class="media__bar">
-              <div class="media__tabs" role="tablist" aria-label="Thesis figures">
-                <button class="media__tab is-active" id="thesis-tab-sweep" type="button" role="tab" aria-selected="true" aria-controls="thesis-panel-sweep">Filter2 sweep</button>
-                <button class="media__tab" id="thesis-tab-runtime" type="button" role="tab" aria-selected="false" aria-controls="thesis-panel-runtime" tabindex="-1">Runtime</button>
-              </div>
-              <span class="media__status"><span class="dot" aria-hidden="true"></span><span data-status>live</span></span>
-            </div>
-            <div class="media__panels">
-              <div class="media__panel is-active" id="thesis-panel-sweep" role="tabpanel" aria-labelledby="thesis-tab-sweep" data-caption="Sweep — dominated points drop out as the 2-D sweep passes; the survivors are the maxima." data-status-text="live">
-                <canvas class="media__canvas" data-pareto width="1200" height="675" role="img" aria-label="Animation of the linear-time 2-D maxima sweep: random points appear, dominated points fade out, and the surviving maxima are joined into a staircase skyline."></canvas>
-              </div>
-              <div class="media__panel" id="thesis-panel-runtime" role="tabpanel" aria-labelledby="thesis-tab-runtime" hidden data-caption="Runtime — MAXIMA2 vs. brute force, 5-dimensional points, log–log axes." data-status-text="benchmark">
-                <div class="media__paper">
-                  <img src="assets/projects/thesis-runtime-5d.jpg" alt="Log–log chart of execution time against point count for MAXIMA2 and a brute-force baseline on five-dimensional points" width="1600" height="1000" loading="lazy" decoding="async" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <figcaption><span>Fig. 01</span> <span data-caption>Sweep — dominated points drop out as the 2-D sweep passes; the survivors are the maxima.</span></figcaption>
-        </figure>
-      </article>
-
-      <article class="feature feature--flip reveal">
-        <div class="feature__body">
-          <div class="meta">
-            <span class="tag">M.Sc. project</span>
-            <span class="tag tag--ghost">Scientific computing</span>
-            <span class="year">2025</span>
-          </div>
-          <h3 class="feature__title">FHP-1 Lattice Gas Simulation</h3>
-          <p class="feature__sub">
-            A fluid modelled as particles hopping on a hexagonal lattice — built in
-            serial and MPI, then validated against the kinetic theory it came from.
-          </p>
-          <ul class="bullets">
-            <li>FHP-1 lattice-gas automaton in C on a <strong>300 × 100 hexagonal lattice</strong>, with periodic, Dirichlet, no-slip and slip boundaries plus flow around a circular obstacle.</li>
-            <li>MPI decomposition into vertical stripes with one ghost column per side and two <strong>Sendrecv</strong> exchanges per step; results stay bitwise identical to the serial run on 1–8 ranks.</li>
-            <li>Counter-based hashing of (seed, step, column, row) keeps random numbers independent of the rank count, so any decomposition can be compared directly.</li>
-            <li>Validated shear-wave viscosity against kinetic theory, measured strong scaling, and produced the figures with Python and MATLAB.</li>
-          </ul>
-          <div class="feature__foot">
-            <ul class="chips">
-              <li>C</li><li>MPI</li><li>MATLAB</li><li>Python</li>
-            </ul>
-            <a class="repo-link" href="https://github.com/janaarundinesh/fhp-lattice-gas-mpi" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" fill="currentColor"/></svg>
-              View on GitHub
-            </a>
-          </div>
-        </div>
-        <figure class="feature__figure">
-          <div class="media" data-media data-interval="9000">
-            <div class="media__bar">
-              <div class="media__tabs" role="tablist" aria-label="FHP-1 figures">
-                <button class="media__tab is-active" id="fhp-tab-thermal" type="button" role="tab" aria-selected="true" aria-controls="fhp-panel-thermal">Thermal</button>
-                <button class="media__tab" id="fhp-tab-velocity" type="button" role="tab" aria-selected="false" aria-controls="fhp-panel-velocity" tabindex="-1">Velocity</button>
-              </div>
-              <span class="media__status"><span class="dot" aria-hidden="true"></span><span data-status>4,000 steps</span></span>
-            </div>
-            <div class="media__panels">
-              <div class="media__panel is-active" id="fhp-panel-thermal" role="tabpanel" aria-labelledby="fhp-tab-thermal" data-caption="Thermal — cold supply air enters from the left and the room cools over 4,000 lattice steps." data-status-text="4,000 steps">
-                <div class="media__dark">
-                  <img class="media__anim" src="assets/projects/fhp-thermal.webp" data-poster="assets/projects/fhp-thermal-poster.jpg" alt="Animation of a room with cold air entering from the left, a pillar obstacle and exhaust on the right; the temperature field cools from red to blue over 4,000 steps while the mean room temperature falls." width="900" height="458" loading="lazy" decoding="async" />
-                </div>
-              </div>
-              <div class="media__panel" id="fhp-panel-velocity" role="tabpanel" aria-labelledby="fhp-tab-velocity" hidden data-caption="Velocity — time-averaged speed and density around a no-slip obstacle." data-status-text="time-averaged">
-                <div class="media__paper">
-                  <img src="assets/projects/fhp-flow.jpg" alt="Time-averaged velocity field with arrows above, and reduced density below, around a circular obstacle on a hexagonal lattice" width="1600" height="960" loading="lazy" decoding="async" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <figcaption><span>Fig. 02</span> <span data-caption>Thermal — cold supply air enters from the left and the room cools over 4,000 lattice steps.</span></figcaption>
-        </figure>
-      </article>
-
-    </div>
-
-    <div class="more reveal">
-      <div class="more__head">
-        <h3 class="more__title">More projects</h3>
-        <a class="more__all" href="https://github.com/janaarundinesh" target="_blank" rel="noopener noreferrer">All repositories <span aria-hidden="true">↗</span></a>
-      </div>
-
-      <div class="more__grid">
-        <a class="mini" href="https://github.com/janaarundinesh/Thermodynamics_Problems_Solver" target="_blank" rel="noopener noreferrer">
-          <div class="mini__visual" aria-hidden="true">
-            <div class="thermo" data-thermo>
-              <div class="thermo__bar">
-                <span class="thermo__brand">ThermoSolve</span>
-                <span class="thermo__sub">TH-01 · Gas properties</span>
-              </div>
-              <div class="thermo__grid">
-                <div class="thermo__panel">
-                  <span class="thermo__label">Ideal gas equation</span>
-                  <span class="thermo__field"><em>P</em><b style="--n:3;--d:.5s">100</b><i>kPa</i></span>
-                  <span class="thermo__field"><em>m</em><b style="--n:1;--d:1.2s">1</b><i>kg</i></span>
-                  <span class="thermo__field"><em>R</em><b style="--n:5;--d:1.7s">0.287</b><i>kJ/kgK</i></span>
-                  <span class="thermo__field"><em>T</em><b style="--n:3;--d:2.6s">300</b><i>K</i></span>
-                  <span class="thermo__btn">Calculate solution</span>
-                </div>
-                <div class="thermo__panel thermo__panel--out">
-                  <span class="thermo__label thermo__label--ok">Solution</span>
-                  <span class="thermo__step" style="--d:5.1s">PV = mRT</span>
-                  <span class="thermo__step" style="--d:5.5s">V = mRT / P</span>
-                  <span class="thermo__step thermo__step--dim" style="--d:5.9s">= 1 · 0.287 · 300 / 100</span>
-                  <span class="thermo__result">V = 0.861 m³</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="mini__body">
-            <div class="mini__top">
-              <span class="mini__index mono-label">03</span>
-              <span class="mini__year mono-label">2026</span>
-            </div>
-            <h4>ThermoSolve</h4>
-            <p>Desktop app for engineering thermodynamics: ten problem modules, worked solution steps with units, a searchable problem library and a unittest regression suite.</p>
-            <ul class="chips"><li>Python</li><li>Tkinter</li><li>unittest</li></ul>
-            <span class="mini__cta">Repository <span aria-hidden="true">↗</span></span>
-          </div>
-        </a>
-
-        <a class="mini" href="https://github.com/janaarundinesh/ImageProcessing_and_Visualization" target="_blank" rel="noopener noreferrer">
-          <div class="mini__visual mini__visual--filters" aria-hidden="true">
-            <img class="filter-img" src="assets/projects/filter-original.jpg" alt="" width="720" height="405" loading="lazy" decoding="async" />
-            <img class="filter-img" src="assets/projects/filter-gaussian.jpg" alt="" width="720" height="405" loading="lazy" decoding="async" />
-            <img class="filter-img" src="assets/projects/filter-edges.jpg" alt="" width="720" height="405" loading="lazy" decoding="async" />
-            <span class="filter-scan"></span>
-            <span class="filter-tag filter-tag--a">Original</span>
-            <span class="filter-tag filter-tag--b">Gaussian blur</span>
-            <span class="filter-tag filter-tag--c">Sobel edges</span>
-          </div>
-          <div class="mini__body">
-            <div class="mini__top">
-              <span class="mini__index mono-label">04</span>
-              <span class="mini__year mono-label">2024</span>
-            </div>
-            <h4>Image Filtering in Jupyter</h4>
-            <p>Notebooks on image-processing filters — Gaussian smoothing, Sobel gradients and side-by-side before/after comparisons.</p>
-            <ul class="chips"><li>Python</li><li>Jupyter</li><li>Image processing</li></ul>
-            <span class="mini__cta">Repository <span aria-hidden="true">↗</span></span>
-          </div>
-        </a>
-
-        <article class="mini mini--static">
-          <div class="mini__visual mini__visual--radar" aria-hidden="true">
-            <span class="radar__ring"></span>
-            <span class="radar__ring"></span>
-            <span class="radar__ring"></span>
-            <span class="radar__sweep"></span>
-            <span class="radar__pin"></span>
-            <span class="radar__tag radar__tag--sos">SOS</span>
-            <span class="radar__tag radar__tag--gps">GPS lock</span>
-          </div>
-          <div class="mini__body">
-            <div class="mini__top">
-              <span class="mini__index mono-label">05</span>
-              <span class="mini__year mono-label">2022</span>
-            </div>
-            <h4>Accident Detection &amp; Alert</h4>
-            <p>Arduino system that detects a crash with accelerometer, gyroscope, GPS and GSM sensors, then alerts contacts and responders with the vehicle’s location.</p>
-            <ul class="chips"><li>Arduino</li><li>Embedded</li><li>GPS / GSM</li></ul>
-            <span class="mini__cta mini__cta--muted">B.E. project</span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ EXPERIENCE ============ -->
   <section class="section" id="experience">
     <div class="section__head">
-      <span class="section__num mono-label">03</span>
+      <span class="section__num mono-label">02</span>
       <h2 class="section__title">Experience</h2>
       <span class="section__rule" aria-hidden="true"></span>
     </div>
@@ -839,6 +629,217 @@
 
     </div>
   </section>
+
+  <!-- ============ WORK ============ -->
+  <section class="section section--work" id="projects">
+    <div class="section__head">
+      <span class="section__num mono-label">03</span>
+      <h2 class="section__title">Projects</h2>
+      <span class="section__rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="featured">
+
+      <article class="feature reveal">
+        <div class="feature__body">
+          <div class="meta">
+            <span class="tag">Master’s thesis</span>
+            <span class="tag tag--ghost">Computational geometry</span>
+            <span class="year">2026</span>
+          </div>
+          <h3 class="feature__title">Non-Dominance Filtering in Parallel</h3>
+          <p class="feature__sub">
+            Computing the skyline of large point sets in five to ten dimensions — and
+            benchmarking hard enough to tell a better algorithm from a faster machine.
+          </p>
+          <ul class="bullets">
+            <li>Implemented <strong>MAXIMA2</strong> and its recursive <strong>FILTER</strong> merge step, including a linear-time 2D sweep base case, in C++17, with a brute-force fallback when a split cannot separate the points.</li>
+            <li>Validated it against <strong>13 hand-built datasets</strong> and benchmarked it against an O(N²·d) brute-force baseline across dimensions 5–10.</li>
+            <li>Built three MPI strategies — ring, fan-in/fan-out and marry-go-round — measuring speed-up and parallel efficiency from 1 to 20 ranks.</li>
+            <li>Wrote the thesis report and plotting pipeline, keeping algorithmic efficiency separate from parallelisation effects.</li>
+          </ul>
+          <div class="feature__foot">
+            <ul class="chips">
+              <li>C++17</li><li>MPI</li><li>CMake</li><li>Benchmarking</li>
+            </ul>
+            <a class="repo-link" href="https://github.com/janaarundinesh/non-dominated-points" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" fill="currentColor"/></svg>
+              View on GitHub
+            </a>
+          </div>
+        </div>
+        <figure class="feature__figure">
+          <div class="media" data-media data-interval="11000">
+            <div class="media__bar">
+              <div class="media__tabs" role="tablist" aria-label="Thesis figures">
+                <button class="media__tab is-active" id="thesis-tab-sweep" type="button" role="tab" aria-selected="true" aria-controls="thesis-panel-sweep">Filter2 sweep</button>
+                <button class="media__tab" id="thesis-tab-runtime" type="button" role="tab" aria-selected="false" aria-controls="thesis-panel-runtime" tabindex="-1">Runtime</button>
+              </div>
+              <span class="media__status"><span class="dot" aria-hidden="true"></span><span data-status>live</span></span>
+            </div>
+            <div class="media__panels">
+              <div class="media__panel is-active" id="thesis-panel-sweep" role="tabpanel" aria-labelledby="thesis-tab-sweep" data-caption="Sweep — dominated points drop out as the 2-D sweep passes; the survivors are the maxima." data-status-text="live">
+                <canvas class="media__canvas" data-pareto width="1200" height="675" role="img" aria-label="Animation of the linear-time 2-D maxima sweep: random points appear, dominated points fade out, and the surviving maxima are joined into a staircase skyline."></canvas>
+              </div>
+              <div class="media__panel" id="thesis-panel-runtime" role="tabpanel" aria-labelledby="thesis-tab-runtime" hidden data-caption="Runtime — MAXIMA2 vs. brute force, 5-dimensional points, log–log axes." data-status-text="benchmark">
+                <div class="media__paper">
+                  <img src="assets/projects/thesis-runtime-5d.jpg" alt="Log–log chart of execution time against point count for MAXIMA2 and a brute-force baseline on five-dimensional points" width="1600" height="1000" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption><span>Fig. 01</span> <span data-caption>Sweep — dominated points drop out as the 2-D sweep passes; the survivors are the maxima.</span></figcaption>
+        </figure>
+      </article>
+
+      <article class="feature feature--flip reveal">
+        <div class="feature__body">
+          <div class="meta">
+            <span class="tag">M.Sc. project</span>
+            <span class="tag tag--ghost">Scientific computing</span>
+            <span class="year">2025</span>
+          </div>
+          <h3 class="feature__title">FHP-1 Lattice Gas Simulation</h3>
+          <p class="feature__sub">
+            A fluid modelled as particles hopping on a hexagonal lattice — built in
+            serial and MPI, then validated against the kinetic theory it came from.
+          </p>
+          <ul class="bullets">
+            <li>FHP-1 lattice-gas automaton in C on a <strong>300 × 100 hexagonal lattice</strong>, with periodic, Dirichlet, no-slip and slip boundaries plus flow around a circular obstacle.</li>
+            <li>MPI decomposition into vertical stripes with one ghost column per side and two <strong>Sendrecv</strong> exchanges per step; results stay bitwise identical to the serial run on 1–8 ranks.</li>
+            <li>Counter-based hashing of (seed, step, column, row) keeps random numbers independent of the rank count, so any decomposition can be compared directly.</li>
+            <li>Validated shear-wave viscosity against kinetic theory, measured strong scaling, and produced the figures with Python and MATLAB.</li>
+          </ul>
+          <div class="feature__foot">
+            <ul class="chips">
+              <li>C</li><li>MPI</li><li>MATLAB</li><li>Python</li>
+            </ul>
+            <a class="repo-link" href="https://github.com/janaarundinesh/fhp-lattice-gas-mpi" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" fill="currentColor"/></svg>
+              View on GitHub
+            </a>
+          </div>
+        </div>
+        <figure class="feature__figure">
+          <div class="media" data-media data-interval="9000">
+            <div class="media__bar">
+              <div class="media__tabs" role="tablist" aria-label="FHP-1 figures">
+                <button class="media__tab is-active" id="fhp-tab-thermal" type="button" role="tab" aria-selected="true" aria-controls="fhp-panel-thermal">Thermal</button>
+                <button class="media__tab" id="fhp-tab-velocity" type="button" role="tab" aria-selected="false" aria-controls="fhp-panel-velocity" tabindex="-1">Velocity</button>
+              </div>
+              <span class="media__status"><span class="dot" aria-hidden="true"></span><span data-status>4,000 steps</span></span>
+            </div>
+            <div class="media__panels">
+              <div class="media__panel is-active" id="fhp-panel-thermal" role="tabpanel" aria-labelledby="fhp-tab-thermal" data-caption="Thermal — cold supply air enters from the left and the room cools over 4,000 lattice steps." data-status-text="4,000 steps">
+                <div class="media__dark">
+                  <img class="media__anim" src="assets/projects/fhp-thermal.webp" data-poster="assets/projects/fhp-thermal-poster.jpg" alt="Animation of a room with cold air entering from the left, a pillar obstacle and exhaust on the right; the temperature field cools from red to blue over 4,000 steps while the mean room temperature falls." width="900" height="458" loading="lazy" decoding="async" />
+                </div>
+              </div>
+              <div class="media__panel" id="fhp-panel-velocity" role="tabpanel" aria-labelledby="fhp-tab-velocity" hidden data-caption="Velocity — time-averaged speed and density around a no-slip obstacle." data-status-text="time-averaged">
+                <div class="media__paper">
+                  <img src="assets/projects/fhp-flow.jpg" alt="Time-averaged velocity field with arrows above, and reduced density below, around a circular obstacle on a hexagonal lattice" width="1600" height="960" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption><span>Fig. 02</span> <span data-caption>Thermal — cold supply air enters from the left and the room cools over 4,000 lattice steps.</span></figcaption>
+        </figure>
+      </article>
+
+    </div>
+
+    <div class="more reveal">
+      <div class="more__head">
+        <h3 class="more__title">More projects</h3>
+        <a class="more__all" href="https://github.com/janaarundinesh" target="_blank" rel="noopener noreferrer">All repositories <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="more__grid">
+        <a class="mini" href="https://github.com/janaarundinesh/Thermodynamics_Problems_Solver" target="_blank" rel="noopener noreferrer">
+          <div class="mini__visual" aria-hidden="true">
+            <div class="thermo" data-thermo>
+              <div class="thermo__bar">
+                <span class="thermo__brand">ThermoSolve</span>
+                <span class="thermo__sub">TH-01 · Gas properties</span>
+              </div>
+              <div class="thermo__grid">
+                <div class="thermo__panel">
+                  <span class="thermo__label">Ideal gas equation</span>
+                  <span class="thermo__field"><em>P</em><b style="--n:3;--d:.5s">100</b><i>kPa</i></span>
+                  <span class="thermo__field"><em>m</em><b style="--n:1;--d:1.2s">1</b><i>kg</i></span>
+                  <span class="thermo__field"><em>R</em><b style="--n:5;--d:1.7s">0.287</b><i>kJ/kgK</i></span>
+                  <span class="thermo__field"><em>T</em><b style="--n:3;--d:2.6s">300</b><i>K</i></span>
+                  <span class="thermo__btn">Calculate solution</span>
+                </div>
+                <div class="thermo__panel thermo__panel--out">
+                  <span class="thermo__label thermo__label--ok">Solution</span>
+                  <span class="thermo__step" style="--d:5.1s">PV = mRT</span>
+                  <span class="thermo__step" style="--d:5.5s">V = mRT / P</span>
+                  <span class="thermo__step thermo__step--dim" style="--d:5.9s">= 1 · 0.287 · 300 / 100</span>
+                  <span class="thermo__result">V = 0.861 m³</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mini__body">
+            <div class="mini__top">
+              <span class="mini__index mono-label">03</span>
+              <span class="mini__year mono-label">2026</span>
+            </div>
+            <h4>ThermoSolve</h4>
+            <p>Desktop app for engineering thermodynamics: ten problem modules, worked solution steps with units, a searchable problem library and a unittest regression suite.</p>
+            <ul class="chips"><li>Python</li><li>Tkinter</li><li>unittest</li></ul>
+            <span class="mini__cta">Repository <span aria-hidden="true">↗</span></span>
+          </div>
+        </a>
+
+        <a class="mini" href="https://github.com/janaarundinesh/ImageProcessing_and_Visualization" target="_blank" rel="noopener noreferrer">
+          <div class="mini__visual mini__visual--filters" aria-hidden="true">
+            <img class="filter-img" src="assets/projects/filter-original.jpg" alt="" width="720" height="405" loading="lazy" decoding="async" />
+            <img class="filter-img" src="assets/projects/filter-gaussian.jpg" alt="" width="720" height="405" loading="lazy" decoding="async" />
+            <img class="filter-img" src="assets/projects/filter-edges.jpg" alt="" width="720" height="405" loading="lazy" decoding="async" />
+            <span class="filter-scan"></span>
+            <span class="filter-tag filter-tag--a">Original</span>
+            <span class="filter-tag filter-tag--b">Gaussian blur</span>
+            <span class="filter-tag filter-tag--c">Sobel edges</span>
+          </div>
+          <div class="mini__body">
+            <div class="mini__top">
+              <span class="mini__index mono-label">04</span>
+              <span class="mini__year mono-label">2024</span>
+            </div>
+            <h4>Image Filtering in Jupyter</h4>
+            <p>Notebooks on image-processing filters — Gaussian smoothing, Sobel gradients and side-by-side before/after comparisons.</p>
+            <ul class="chips"><li>Python</li><li>Jupyter</li><li>Image processing</li></ul>
+            <span class="mini__cta">Repository <span aria-hidden="true">↗</span></span>
+          </div>
+        </a>
+
+        <article class="mini mini--static">
+          <div class="mini__visual mini__visual--radar" aria-hidden="true">
+            <span class="radar__ring"></span>
+            <span class="radar__ring"></span>
+            <span class="radar__ring"></span>
+            <span class="radar__sweep"></span>
+            <span class="radar__pin"></span>
+            <span class="radar__tag radar__tag--sos">SOS</span>
+            <span class="radar__tag radar__tag--gps">GPS lock</span>
+          </div>
+          <div class="mini__body">
+            <div class="mini__top">
+              <span class="mini__index mono-label">05</span>
+              <span class="mini__year mono-label">2022</span>
+            </div>
+            <h4>Accident Detection &amp; Alert</h4>
+            <p>Arduino system that detects a crash with accelerometer, gyroscope, GPS and GSM sensors, then alerts contacts and responders with the vehicle’s location.</p>
+            <ul class="chips"><li>Arduino</li><li>Embedded</li><li>GPS / GSM</li></ul>
+            <span class="mini__cta mini__cta--muted">B.E. project</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
 
   <!-- ============ EDUCATION ============ -->
   <section class="section" id="education">
