@@ -83,6 +83,27 @@
   }
 
   /* ----------------------------------------------------------------------
+     Same-page links
+     Smooth scrolling is done here rather than with CSS: ScrollTrigger has to
+     measure pins on a document that is not animating its own scroll.
+     ---------------------------------------------------------------------- */
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const hash = link.getAttribute("href");
+      if (!hash || hash === "#" || link.classList.contains("skip-link")) return;
+
+      const target = document.querySelector(hash);
+      if (!target) return;
+
+      event.preventDefault();
+      const top =
+        hash === "#top" ? 0 : target.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top, behavior: prefersReduced ? "auto" : "smooth" });
+      if (window.history && history.pushState) history.pushState(null, "", hash);
+    });
+  });
+
+  /* ----------------------------------------------------------------------
      Reveal on scroll
      ---------------------------------------------------------------------- */
   /* ----------------------------------------------------------------------
@@ -254,16 +275,22 @@
 
   if ("IntersectionObserver" in window && sections.length) {
     const contactSection = document.getElementById("contact");
+    const inBand = new Set();
     const sectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          navLinks.forEach((link) => {
-            link.classList.toggle(
-              "is-current",
-              link.getAttribute("href") === `#${entry.target.id}`
-            );
-          });
+          if (entry.isIntersecting) inBand.add(entry.target.id);
+          else inBand.delete(entry.target.id);
+        });
+
+        // Clear the highlight when nothing sits in the reading band, e.g. on
+        // the welcome screen or while the closing contact block fills it.
+        const current = sections.find((section) => inBand.has(section.id));
+        navLinks.forEach((link) => {
+          link.classList.toggle(
+            "is-current",
+            !!current && link.getAttribute("href") === `#${current.id}`
+          );
         });
       },
       { rootMargin: "-46% 0px -50% 0px", threshold: 0 }
@@ -600,6 +627,7 @@
     let paused = false;
     let manual = false;
     let onScreen = true;
+    let held = false;
 
     const show = (next, animate) => {
       index = (next + tabs.length) % tabs.length;
@@ -629,7 +657,7 @@
 
     const schedule = () => {
       window.clearInterval(timer);
-      if (prefersReduced || manual) return;
+      if (prefersReduced || manual || held) return;
       const interval = Number(media.dataset.interval) || 9000;
       timer = window.setInterval(() => {
         if (!onScreen || paused || document.hidden) return;
@@ -656,6 +684,31 @@
       });
     });
 
+    /* The cinematic layer can drive the panels from scroll position. It asks
+       through events so this module keeps ownership of tabs, captions and the
+       autoplay timer; a visitor's own tab choice always wins. */
+    media.addEventListener("portfolio:hold", () => {
+      held = true;
+      window.clearInterval(timer);
+      timer = null;
+    });
+
+    media.addEventListener("portfolio:scene", (event) => {
+      if (manual) return;
+      const next = Number(event.detail && event.detail.index);
+      if (Number.isNaN(next)) return;
+      held = true;
+      window.clearInterval(timer);
+      timer = null;
+      show(next, true);
+    });
+
+    media.addEventListener("portfolio:release", () => {
+      if (!held) return;
+      held = false;
+      schedule();
+    });
+
     // Only rotate while the figure is on screen, and start again from the live
     // animation when a visitor arrives, so nobody lands on the static chart.
     if ("IntersectionObserver" in window) {
@@ -665,7 +718,9 @@
           const visible = entries[0] ? entries[0].isIntersecting : false;
           if (visible && !onScreen) {
             onScreen = true;
-            if (!manual && !prefersReduced) show(0, true);
+            // When the motion layer drives the scene from scroll progress, it
+            // decides which panel is shown — never reset it here.
+            if (!manual && !held && !prefersReduced && media.dataset.scrollScene !== "on") show(0, true);
             schedule();
           } else if (!visible) {
             onScreen = false;

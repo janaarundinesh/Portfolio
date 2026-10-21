@@ -32,7 +32,9 @@
 *::after { box-sizing: border-box; }
 
 html {
-  scroll-behavior: smooth;
+  /* Smooth anchor scrolling lives in script.js: ScrollTrigger needs to measure
+     a document that is not animating its own scroll position. */
+  scroll-behavior: auto;
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
 }
@@ -510,7 +512,8 @@ svg { display: block; }
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--ink-3);
+  /* matches the page so the entrance wipe opens out of the background */
+  background: var(--ink);
   box-shadow: 0 0 0 1px rgba(244, 241, 232, 0.07);
 }
 .welcome__frame img {
@@ -581,7 +584,8 @@ svg { display: block; }
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: 2px;
-  background: var(--ink-3);
+  /* matches the page so the entrance wipe opens out of the background */
+  background: var(--ink);
   box-shadow: 18px 18px 0 0 rgba(204, 255, 0, 0.9);
   transition: box-shadow 0.4s var(--ease), transform 0.4s var(--ease);
 }
@@ -2132,6 +2136,41 @@ textarea.field__input { resize: vertical; min-height: 116px; }
 .footer__top { color: var(--paper); transition: color 0.25s; }
 .footer__top:hover { color: var(--acid); }
 
+/* ---------- cinematic motion (progressive enhancement) ---------- */
+
+/* While GSAP prepares the hero entrance the opening frame is held back. Both
+   the inline head script and motion.js remove this class, and it is only ever
+   added when motion is welcome, so content is never left hidden. */
+html.motion-pending [data-intro],
+html.motion-pending .hero__portrait {
+  opacity: 0;
+}
+
+/* Pinned project cards are measured by ScrollTrigger, so they must not still
+   carry the reveal offset when that measurement happens. They keep the fade. */
+.feature.reveal { transform: none; }
+
+/* The pointer tilt replaces the CSS lift, so drop the transform transition to
+   keep tracking crisp. */
+html.motion-tilt .mini {
+  transition-property: background-color, box-shadow;
+}
+html.motion-tilt .mini:not(.mini--static):hover {
+  transform: none;
+}
+
+/* Project figures: a restrained zoom on hover. GSAP layers the scroll-linked
+   scale and glow on top of this. */
+.media__paper,
+.media__dark { overflow: hidden; }
+.media__paper img,
+.media__dark img { transition: transform 1.2s var(--ease); }
+.feature:hover .media__paper img,
+.feature:hover .media__dark img { transform: scale(1.03); }
+
+/* The reading-progress hairline gets the faintest neon lift. */
+.progress span { box-shadow: 0 0 10px rgba(204, 255, 0, 0.4); }
+
 /* ---------- scroll reveal ---------- */
 
 .reveal {
@@ -2278,6 +2317,8 @@ textarea.field__input { resize: vertical; min-height: 116px; }
   }
   .reveal { opacity: 1; transform: none; }
   .cursor { display: none !important; }
+  .feature:hover .media__paper img,
+  .feature:hover .media__dark img { transform: none; }
   .ticker__track,
   .contact__marquee-track { animation: none; }
 
@@ -2311,4 +2352,14 @@ textarea.field__input { resize: vertical; min-height: 116px; }
   .ticker, .contact__marquee, .footer { display: none !important; }
   .hero, .section, .contact { padding: 20px 0; min-height: auto; }
   .reveal { opacity: 1; transform: none; }
+  /* GSAP may have staged these for a scroll reveal that print never reaches. */
+  .section__title,
+  .contact__email,
+  .contact__title .line > span,
+  [data-intro] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
 }
