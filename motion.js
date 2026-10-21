@@ -474,6 +474,48 @@
   };
 
   /* ----------------------------------------------------------------------
+     5b. Experience cards
+     The stack arrives as one short stagger. It fires once, so opening a card
+     later never re-triggers the entrance.
+     ---------------------------------------------------------------------- */
+
+  const buildExperienceCues = () => {
+    const stack = document.querySelector("[data-xp-stack]");
+    if (!stack) return () => {};
+
+    const cards = gsap.utils.toArray(".xp-card", stack);
+    if (!cards.length) return () => {};
+
+    const tl = gsap.timeline({ paused: true, defaults: { ease: EASE } });
+    tl.from(cards, {
+      y: 26,
+      autoAlpha: 0,
+      duration: 0.85,
+      stagger: 0.08,
+      clearProps: "transform,opacity,visibility"
+    });
+
+    const trigger = ScrollTrigger.create({
+      trigger: stack,
+      start: "top 88%",
+      once: true,
+      onEnter: () => tl.play(0)
+    });
+
+    // A reload that restores a scroll position inside (or past) the stack
+    // starts with the trigger already crossed, so play it here as well.
+    if (stack.getBoundingClientRect().top < window.innerHeight * 0.88) {
+      tl.play(0);
+    }
+
+    return () => {
+      trigger.kill();
+      tl.kill();
+      clear(cards, "transform,opacity,visibility");
+    };
+  };
+
+  /* ----------------------------------------------------------------------
      6. Ambient film grain
      A barely-there change in texture across the whole page; the grain layer
      is already fixed, so this only touches its opacity.
@@ -518,6 +560,7 @@
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const cleanups = [
         buildHeadCues(),
+        buildExperienceCues(),
         buildContact(),
         attachTilt(document.querySelectorAll(".mini:not(.mini--static)"), {
           max: 5,

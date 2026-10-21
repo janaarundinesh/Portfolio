@@ -36,13 +36,13 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 | --- | --- |
 | `index.html` | All content and structure: hero, about, projects, experience, education, awards, toolkit, contact. |
 | `styles.css` | The whole visual system — design tokens at the top, then sections, responsive rules, reduced-motion and print styles. |
-| `script.js` | Hero canvas and the welcome→portrait scroll morph, reveals, counters, mobile menu, custom cursor, magnetic buttons, copy-email button, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow, anchor scrolling and the contact form. |
-| `motion.js` | Optional cinematic layer: GSAP entrance, section cues, pinned showcases, scroll-driven figure scenes, pointer tilt. Safe to remove — the page falls back to its CSS motion. |
+| `script.js` | Hero canvas and the welcome→portrait scroll morph, reveals, counters, mobile menu, the experience card accordion, custom cursor, magnetic buttons, copy-email button, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow, anchor scrolling and the contact form. |
+| `motion.js` | Optional cinematic layer: GSAP entrance, section cues, the experience-card stagger, pinned showcases, scroll-driven figure scenes, pointer tilt. Safe to remove — the page falls back to its CSS motion. |
 | `assets/vendor/` | Vendored `gsap.min.js` and `ScrollTrigger.min.js` (3.13.0), so the page loads no third-party script at runtime. |
 | `assets/portrait.jpg` | 933 × 1100 web-optimised portrait (plus `portrait-640.jpg` for small screens). |
 | `assets/welcome.jpg` | The full-body spotlight photo used on the welcome screen (and as the portrait on phones). |
 | `assets/welcome-mobile.jpg` | 900 px version of the same photo for small screens. |
-| `assets/Arun_Dinesh_Jana_CV.pdf` | The downloadable CV linked from the hero and contact sections. |
+| `assets/Arun_Dinesh_Jana_CV.pdf` | The downloadable CV linked from the hero. |
 | `assets/projects/` | Figures pulled from the GitHub repos: `thesis-runtime-5d.jpg`, `fhp-flow.jpg`, plus the derived animation frames `fhp-thermal.webp` and the filter stills in `assets/projects/filter-*.jpg`. |
 | `screenshots/` | Reference captures of the finished layout. Safe to delete. |
 
@@ -64,8 +64,12 @@ section you want:
   The figure panels use `data-media` with two tabs (the live animation and the
   static evidence); `data-interval` sets how long each tab holds, and the tabs
   only rotate while the figure is on screen.
-- `<!-- ============ EXPERIENCE ============ -->` — one `<article class="xp">` per role,
-  newest first.
+- `<!-- ============ EXPERIENCE ============ -->` — one `<article class="xp-card">` per role,
+  newest first. The left half is a decorative CSS scene (scope, terminal, marketplace,
+  turbine) and the right half holds the title and the toggle. Each card's detail block
+  has an `id` matched by the toggle's `aria-controls`; the toggle's `[data-xp-label]`
+  text is swapped between "Details" and "Close" in `script.js`. Hovering previews a
+  card, clicking pins it open, Escape closes it.
 - `<!-- ============ EDUCATION ============ -->` — one `.edu__row` per degree.
 - `<!-- ============ AWARDS ============ -->` — publications and awards side by side.
 - `<!-- ============ TOOLKIT ============ -->` — a `.stack` block. Each `.stack__item`
@@ -73,8 +77,9 @@ section you want:
   draws one ring per item and one chip per slug. The slugs point at `<symbol id="lg-…">`
   entries in the inline icon sprite at the top of `<body>`; add a 24×24 symbol there
   to add a logo. `.stack__tag` is the count and `.stack__tools` is the expanded row.
-- `<!-- ============ CONTACT ============ -->` — email, phone, GitHub, LinkedIn, location.
-  The headline's `.line` elements are masks; keep the inner `<span>` so the outline
+- `<!-- ============ CONTACT ============ -->` — email and the message form, plus three
+  linked icon tiles (phone, GitHub, LinkedIn) built from the sprite symbols. The
+  headline's `.line` elements are masks; keep the inner `<span>` so the outline
   style and the masked rise continue to work.
 
 ### Refreshing a project from GitHub
