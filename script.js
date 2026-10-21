@@ -134,9 +134,10 @@
       const p = clamp((window.scrollY - introTop) / distance, 0, 1);
       const slide = 1 - p;
       const scale = 1 + (startScale - 1) * slide;
+      // The badge hangs at -2.4deg, so the photograph matches it as it lands.
       welcome.style.transform =
         "translate3d(" + (dx * slide).toFixed(2) + "px," + (dy * slide).toFixed(2) + "px,0) " +
-        "scale(" + scale.toFixed(4) + ") rotate(" + (-1.4 * slide).toFixed(2) + "deg)";
+        "scale(" + scale.toFixed(4) + ") rotate(" + (-1.4 * slide - 2.4 * p).toFixed(2) + "deg)";
       welcome.style.opacity = String(clamp(1 - (p - 0.52) / 0.26, 0, 1));
       stage.style.setProperty("--portrait-op", String(clamp((p - 0.55) / 0.25, 0, 1)));
       stage.style.setProperty("--copy-op", String(clamp((p - 0.34) / 0.32, 0, 1)));
@@ -162,7 +163,6 @@
       live = true;
 
       const stageRect = stage.getBoundingClientRect();
-      const innerRect = inner.getBoundingClientRect();
       const width = frame.offsetWidth;
       const height = frame.offsetHeight;
       if (!width || !height) {
@@ -175,10 +175,11 @@
       stageH = stage.offsetHeight;
       distance = Math.max(1, intro.offsetHeight - stageH);
 
-      // the frame's offsetParent is the transformed portrait figure, so add
-      // the figure's own offset inside .hero__inner as well
-      const x = innerRect.left - stageRect.left + portrait.offsetLeft + frame.offsetLeft;
-      const y = innerRect.top - stageRect.top + portrait.offsetTop + frame.offsetTop;
+      // The badge nests a rotating card inside the figure, so measure the
+      // frame's centre on screen rather than chaining offsetLeft/offsetTop.
+      const frameRect = frame.getBoundingClientRect();
+      const x = frameRect.left + frameRect.width / 2 - stageRect.left - width / 2;
+      const y = frameRect.top + frameRect.height / 2 - stageRect.top - height / 2;
       welcome.style.width = width + "px";
       welcome.style.height = height + "px";
       welcome.style.left = x + "px";
@@ -199,6 +200,28 @@
     });
     if (wideEnough.addEventListener) wideEnough.addEventListener("change", measure);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  }
+
+  /* ----------------------------------------------------------------------
+     Portrait badge
+     A click flips the hanging ID card to its reverse; the face swap also
+     switches which side assistive tech can read.
+     ---------------------------------------------------------------------- */
+  const badge = document.querySelector("[data-badge-card]");
+
+  if (badge) {
+    const flip = badge.querySelector(".hero__badge-flip");
+    const front = badge.querySelector(".hero__badge-front");
+    const back = badge.querySelector(".hero__badge-back");
+
+    if (flip) {
+      flip.addEventListener("click", () => {
+        const flipped = badge.classList.toggle("is-flipped");
+        flip.setAttribute("aria-pressed", String(flipped));
+        if (front) front.setAttribute("aria-hidden", String(flipped));
+        if (back) back.setAttribute("aria-hidden", String(!flipped));
+      });
+    }
   }
 
   const revealEls = document.querySelectorAll(".reveal");
@@ -298,40 +321,6 @@
     sections.forEach((section) => sectionObserver.observe(section));
     // clear the highlight when the closing contact block is in view
     if (contactSection) sectionObserver.observe(contactSection);
-  }
-
-  /* ----------------------------------------------------------------------
-     Copy email
-     ---------------------------------------------------------------------- */
-  const copyBtn = document.querySelector("[data-copy]");
-  if (copyBtn) {
-    const label = copyBtn.querySelector("[data-copy-label]");
-    let resetTimer;
-
-    copyBtn.addEventListener("click", async () => {
-      const value = copyBtn.dataset.copy || "";
-      try {
-        await navigator.clipboard.writeText(value);
-      } catch {
-        const temp = document.createElement("textarea");
-        temp.value = value;
-        temp.setAttribute("readonly", "");
-        temp.style.position = "fixed";
-        temp.style.opacity = "0";
-        document.body.appendChild(temp);
-        temp.select();
-        try { document.execCommand("copy"); } catch { /* no-op */ }
-        document.body.removeChild(temp);
-      }
-      if (!label) return;
-      label.textContent = "Copied";
-      copyBtn.classList.add("is-copied");
-      window.clearTimeout(resetTimer);
-      resetTimer = window.setTimeout(() => {
-        label.textContent = "Copy address";
-        copyBtn.classList.remove("is-copied");
-      }, 2000);
-    });
   }
 
   /* ----------------------------------------------------------------------
