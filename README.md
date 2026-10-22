@@ -9,7 +9,8 @@ entrance, pinned project showcases and pointer tilt.
 The page opens on a full-screen welcome: a spotlight portrait sits beside your
 name, and as you scroll it slides right, shrinks into the photo window of a
 hanging ID badge and dissolves into the headshot, while the intro copy fades in.
-The badge can be flipped by clicking it. Below that, the experience cards open
+The badge can be flipped by clicking it, and its reverse lists date of birth,
+location and gender. Below that, the experience cards open
 in place, projects animate underneath them, the toolkit is a radial map of tool
 logos, and the contact block has a working message form followed by bare icon
 links to email, phone, GitHub and LinkedIn.
@@ -44,6 +45,7 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 | `assets/portrait.jpg` | 933 × 1100 web-optimised portrait (plus `portrait-640.jpg` for small screens). |
 | `assets/welcome.jpg` | The full-body spotlight photo used on the welcome screen. |
 | `assets/welcome-mobile.jpg` | Optional 900 px version of the welcome photo; the page no longer requests it. |
+| `assets/preview.jpeg` | The 574 × 300 social preview card (`og:image` / `twitter:image`) used when the link is shared. |
 | `assets/Arun_Dinesh_Jana_CV.pdf` | The downloadable CV linked from the hero. |
 | `assets/projects/` | Figures pulled from the GitHub repos: `thesis-runtime-5d.jpg`, `fhp-flow.jpg`, plus the derived animation frames `fhp-thermal.webp` and the filter stills in `assets/projects/filter-*.jpg`. |
 | `screenshots/` | Reference captures of the finished layout. Safe to delete. |
@@ -216,13 +218,26 @@ It is a static site, so anything that serves files will do:
 - **Any web host** — upload `index.html`, `styles.css`, `script.js`, `motion.js`
   and `assets/` (including `assets/vendor/`) to the same directory.
 
-After you have a real URL, add it back to `<head>` for clean sharing:
+The live copy is GitHub Pages at `https://janaarundinesh.github.io/Portfolio/`, and
+`<head>` already points the social tags at it. Twitter, LinkedIn, Slack and
+iMessage only read absolute image URLs, so if the site ever moves to another
+domain, change these four values together:
 
 ```html
 <link rel="canonical" href="https://your-domain.com/" />
 <meta property="og:url" content="https://your-domain.com/" />
-<meta property="og:image" content="https://your-domain.com/assets/portrait.jpg" />
+<meta property="og:image" content="https://your-domain.com/assets/preview.jpeg" />
+<meta name="twitter:image" content="https://your-domain.com/assets/preview.jpeg" />
 ```
+
+`og:image:width` and `og:image:height` must match the real file size of
+`assets/preview.jpeg`; update them if you swap the image. Export it at
+1200 × 630 for the sharpest large card.
+
+Scrapers cache what they first found, so after changing the image or title, ask
+them to re-read the page: the Facebook Sharing Debugger, the LinkedIn Post
+Inspector, or X's Card Validator. Until then a shared link can keep showing the
+old preview.
 
 ## Notes
 
