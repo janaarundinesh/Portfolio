@@ -739,52 +739,40 @@ svg { display: block; }
   inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px 18px 16px;
+  justify-content: center;
+  padding: 26px 18px;
   transform: rotateY(180deg);
   background:
     radial-gradient(120% 90% at 82% 0%, rgba(204, 255, 0, 0.13), transparent 60%),
     #0a0c0f;
 }
-.hero__badge-back-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+.hero__badge-spec {
+  display: grid;
+  margin: 0;
+  border-top: 1px solid rgba(244, 241, 232, 0.14);
 }
-.hero__badge-chip {
-  width: 27px;
-  height: 20px;
-  border-radius: 3px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.35), transparent 55%),
-    linear-gradient(145deg, #d9d5c8, #8a8b84 60%, #b9b6aa);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+.hero__badge-spec-row {
+  display: grid;
+  gap: 5px;
+  padding: 17px 2px;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.14);
 }
-.hero__badge-back-title {
-  font-family: var(--display);
-  font-size: clamp(1.7rem, 2.6vw, 2.1rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+.hero__badge-spec dt {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--paper-faint);
 }
-.hero__badge-back-copy {
-  font-size: 12px;
-  line-height: 1.55;
-  color: var(--paper-dim);
-}
-.hero__badge-barcode {
-  height: 36px;
-  margin-top: auto;
-  opacity: 0.8;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--paper) 0 2px,
-    transparent 2px 4px,
-    var(--paper) 4px 5px,
-    transparent 5px 9px
-  );
+.hero__badge-spec dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--paper);
 }
 
 .hero__badge-flip {
