@@ -45,7 +45,8 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 | `assets/portrait.jpg` | 933 × 1100 web-optimised portrait (plus `portrait-640.jpg` for small screens). |
 | `assets/welcome.jpg` | The full-body spotlight photo used on the welcome screen. |
 | `assets/welcome-mobile.jpg` | Optional 900 px version of the welcome photo; the page no longer requests it. |
-| `assets/preview.jpeg` | The 574 × 300 social preview card (`og:image` / `twitter:image`) used when the link is shared. |
+| `assets/preview.jpeg` | The 1200 × 630 social preview card (`og:image` / `twitter:image`) used when the link is shared. |
+| `tools/social-card.html` | The page the preview card is rendered from. Never linked from the site. |
 | `assets/Arun_Dinesh_Jana_CV.pdf` | The downloadable CV linked from the hero. |
 | `assets/projects/` | Figures pulled from the GitHub repos: `thesis-runtime-5d.jpg`, `fhp-flow.jpg`, plus the derived animation frames `fhp-thermal.webp` and the filter stills in `assets/projects/filter-*.jpg`. |
 | `screenshots/` | Reference captures of the finished layout. Safe to delete. |
@@ -231,8 +232,29 @@ domain, change these four values together:
 ```
 
 `og:image:width` and `og:image:height` must match the real file size of
-`assets/preview.jpeg`; update them if you swap the image. Export it at
-1200 × 630 for the sharpest large card.
+`assets/preview.jpeg`.
+
+### Regenerating the preview card
+
+The card is rendered from `tools/social-card.html`, which uses the same flow
+field, type and portrait as the site; the field is seeded, so a rerun with the
+same copy produces the same image. Open it at exactly 1200 × 630 and capture the
+viewport:
+
+```bash
+# with a Chromium browser, at 2× for a crisper downscale
+"/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" \
+  --headless=new --disable-gpu --hide-scrollbars \
+  --force-device-scale-factor=2 --window-size=1200,630 \
+  --virtual-time-budget=4000 --screenshot=/tmp/card.png \
+  "http://127.0.0.1:4321/tools/social-card.html"
+
+sips -Z 1200 /tmp/card.png --out /tmp/card-1200.png
+sips -s format jpeg -s formatOptions 90 /tmp/card-1200.png --out assets/preview.jpeg
+```
+
+If you change the card's size, update `og:image:width` and `og:image:height` in
+`index.html` with it.
 
 Scrapers cache what they first found, so after changing the image or title, ask
 them to re-read the page: the Facebook Sharing Debugger, the LinkedIn Post
