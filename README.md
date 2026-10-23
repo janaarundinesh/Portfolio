@@ -78,7 +78,9 @@ section you want:
   repository with `.repo-link`; each mini card is itself an `<a>` pointing at the repo.
   The figure panels use `data-media` with two tabs (the live animation and the
   static evidence); `data-interval` sets how long each tab holds, and the tabs
-  only rotate while the figure is on screen.
+  only rotate while the figure is on screen and the window is at least 981 px
+  wide. On a phone the figure simply holds — nothing swaps while you scroll past
+  it — and you tap the other tab when you want it.
 - `<!-- ============ EDUCATION ============ -->` — one `.edu__row` per degree.
 - `<!-- ============ AWARDS ============ -->` — publications and awards side by side.
 - `<!-- ============ TOOLKIT ============ -->` — a `.stack` block. Each `.stack__item`
@@ -137,7 +139,10 @@ form submissions to you — no server needed.
 3. Submit the form once from the live site and check your inbox.
 
 Until a key is present, the form is not dead: JavaScript opens the visitor's mail
-app with the subject and message already filled in, addressed to you.
+app with the subject and message already filled in, addressed to you. The form's
+`action` points at Web3Forms as well, so a visitor without JavaScript posts
+natively and comes back to `?sent=1` on the contact section, where the page says
+the message went through.
 
 ## Motion
 
@@ -155,8 +160,9 @@ third-party requests). It loads with `defer` after the base script.
   `.feature` pins at a centred stage while its figure settles and switches from
   the live animation to the static evidence at the halfway point. A card has to
   fit the viewport; if it does not, it gets the unpinned treatment. Below those
-  sizes the figure still zooms and changes scene as it crosses the screen, with
-  no pin.
+  sizes the figure only zooms as it crosses the screen, with no pin and no scene
+  change: the trigger for a tall phone card reaches its midpoint long before the
+  figure has been read, so the swap there belongs to the tabs, not the scroll.
 - **Cards** — the mini cards and project figures tilt a few degrees toward the
   pointer, and project images zoom slightly on hover.
 - **Closing** — the contact headline masks up and the form settles in.
@@ -166,9 +172,10 @@ not ScrollTrigger. Pinning adds height to the document while ScrollTrigger is
 measuring, so a trigger created before the pins can keep a stale start position;
 the observer always reads the element's live box.
 
-The figure tabs still belong to `script.js`. The motion layer only asks for a
-scene through `portfolio:scene` events and holds autoplay with `portfolio:hold`
-while scroll is in charge. Clicking a tab yourself always wins.
+The figure tabs still belong to `script.js`. On the pinned desktop card the
+motion layer asks for a scene through `portfolio:scene` events and holds autoplay
+with `portfolio:hold` while scroll is in charge. Clicking a tab yourself always
+wins.
 
 Tuning lives in `motion.js`: `PIN_MARGIN`, the `+=72%` pin length, the
 `center center` stage start and the tilt maxima in the two `attachTilt` calls.

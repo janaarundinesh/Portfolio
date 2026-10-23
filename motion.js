@@ -277,9 +277,16 @@
     let scene = 0;
     let held = false;
 
+    // Only the pinned desktop card hands the figure over to the scroll
+    // position. On a phone the trigger is the whole card, and its midpoint
+    // falls while the figure is still on its way up the screen — the panel
+    // would flip before anyone had looked at it. There the tabs keep charge of
+    // which figure is showing, and the scroll only carries the zoom.
+    const driveScene = pinned;
+
     // Tells the base layer that scroll position owns the scene, so its
     // visibility observer does not reset the figure on the way in or out.
-    media.dataset.scrollScene = "on";
+    if (driveScene) media.dataset.scrollScene = "on";
 
     const setScene = (index, force) => {
       if (index === scene && !force) return;
@@ -305,27 +312,29 @@
       media.dispatchEvent(new Event("portfolio:release"));
     };
 
-    const tl = gsap.timeline({
-      defaults: { ease: "none" },
-      scrollTrigger: {
-        trigger: feature,
-        start: pinned ? "center center" : "top 78%",
-        end: pinned ? "+=72%" : "bottom 35%",
-        pin: pinned,
-        pinSpacing: pinned,
-        anticipatePin: pinned ? 1 : 0,
-        scrub: pinned ? 0.7 : 0.4,
-        invalidateOnRefresh: true,
-        onEnter: (self) => hold(self.progress),
-        onEnterBack: (self) => hold(self.progress),
-        onLeave: releaseScene,
-        onLeaveBack: () => {
-          setScene(0);
-          releaseScene();
-        },
-        onUpdate: (self) => setScene(self.progress > 0.5 ? 1 : 0)
-      }
-    });
+    const trigger = {
+      trigger: feature,
+      start: pinned ? "center center" : "top 78%",
+      end: pinned ? "+=72%" : "bottom 35%",
+      pin: pinned,
+      pinSpacing: pinned,
+      anticipatePin: pinned ? 1 : 0,
+      scrub: pinned ? 0.7 : 0.4,
+      invalidateOnRefresh: true
+    };
+
+    if (driveScene) {
+      trigger.onEnter = (self) => hold(self.progress);
+      trigger.onEnterBack = (self) => hold(self.progress);
+      trigger.onLeave = releaseScene;
+      trigger.onLeaveBack = () => {
+        setScene(0);
+        releaseScene();
+      };
+      trigger.onUpdate = (self) => setScene(self.progress > 0.5 ? 1 : 0);
+    }
+
+    const tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: trigger });
 
     tl.fromTo(figure, { y: 0 }, { y: pinned ? -12 : -5, duration: 1 }, 0)
       .fromTo(
@@ -339,14 +348,19 @@
         },
         0
       )
-      // dip while the scene is swapped, then come back up
-      .to(stage, { opacity: 0.35, duration: 0.1 }, 0.42)
-      .to(stage, { opacity: 1, duration: 0.16 }, 0.5)
       .fromTo(body, { y: 0 }, { y: pinned ? -18 : -6, duration: 1 }, 0);
 
+    // A dip while the panel is swapped — only where a swap actually happens.
+    if (driveScene) {
+      tl.to(stage, { opacity: 0.35, duration: 0.1 }, 0.42)
+        .to(stage, { opacity: 1, duration: 0.16 }, 0.5);
+    }
+
     return () => {
-      setScene(0);
-      releaseScene();
+      if (driveScene) {
+        setScene(0);
+        releaseScene();
+      }
       if (tl.scrollTrigger) tl.scrollTrigger.kill();
       tl.kill();
       delete media.dataset.scrollScene;

@@ -644,9 +644,14 @@
       if (status) status.textContent = panel.dataset.statusText || "";
     };
 
+    // Autoplay is a wide-screen idea. On a phone the figure is the thing you
+    // scrolled to see, so it holds the live visual and the visitor taps the
+    // other tab when they want it — nothing swaps under a moving thumb.
+    const wideScreen = window.matchMedia("(min-width: 981px)");
+
     const schedule = () => {
       window.clearInterval(timer);
-      if (prefersReduced || manual || held) return;
+      if (prefersReduced || manual || held || !wideScreen.matches) return;
       const interval = Number(media.dataset.interval) || 9000;
       timer = window.setInterval(() => {
         if (!onScreen || paused || document.hidden) return;
@@ -721,6 +726,8 @@
       );
       visibility.observe(media);
     }
+
+    if (wideScreen.addEventListener) wideScreen.addEventListener("change", schedule);
 
     media.addEventListener("pointerenter", () => { paused = true; });
     media.addEventListener("pointerleave", () => { paused = false; });
@@ -1056,6 +1063,19 @@
       statusEl.dataset.state = state || "";
     };
 
+    // Without JavaScript the form posts straight to Web3Forms, which sends the
+    // visitor back here with ?sent=1 — say so rather than showing a blank form.
+    if (/[?&]sent=1(&|$)/.test(window.location.search)) {
+      setStatus("Sent — it's in my inbox. Thanks for reaching out.", "ok");
+      if (submitLabel) submitLabel.textContent = "Sent";
+      window.setTimeout(() => {
+        if (submitLabel) submitLabel.textContent = "Send message";
+      }, 4000);
+      if (window.history && history.replaceState) {
+        window.history.replaceState(null, "", window.location.pathname + "#contact");
+      }
+    }
+
     mailForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (mailForm.querySelector('[name="botcheck"]').checked) return;
@@ -1070,7 +1090,12 @@
         const subject = encodeURIComponent("Portfolio enquiry from " + name);
         const body = encodeURIComponent(message + "\n\n— " + name + " (" + from + ")");
         window.location.href = "mailto:" + address + "?subject=" + subject + "&body=" + body;
-        setStatus("Opening your mail app — or write to " + address + ".", "note");
+        setStatus(
+          "Opening your mail app with this message ready to send. If nothing opens, write to " +
+            address +
+            ".",
+          "note"
+        );
         return;
       }
 
