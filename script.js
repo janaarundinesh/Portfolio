@@ -1132,92 +1132,206 @@
   });
 
   /* ----------------------------------------------------------------------
-     Toolkit dial — one ring per category, one logo per tool
+     Toolkit deck — a fanned hand of tool cards that keeps shuffling, and
+     deals in the cards for whichever category you hover or click
      ---------------------------------------------------------------------- */
   const stack = document.querySelector("[data-stack]");
   if (stack) {
-    const dial = stack.querySelector("[data-stack-dial]");
+    const NS = "http://www.w3.org/2000/svg";
+    const deck = stack.querySelector("[data-stack-deck]");
+    const stage = stack.querySelector(".stack__stage");
     const items = Array.from(stack.querySelectorAll(".stack__item"));
     const elIndex = stack.querySelector("[data-stack-index]");
     const elName = stack.querySelector("[data-stack-name]");
     const elCount = stack.querySelector("[data-stack-count]");
     const elGhost = stack.querySelector("[data-stack-ghost]");
     const totalLabel = elIndex.parentElement.querySelector("i");
-    const NS = "http://www.w3.org/2000/svg";
-    const CX = 210;
-    const CY = 210;
-    const R0 = 78;
-    const STEP = 28;
-    const CHIP = 14;
-    const LOGO = 18;
-    const rings = [];
 
-    const node = (tag, attrs) => {
-      const el = document.createElementNS(NS, tag);
-      Object.keys(attrs).forEach((key) => el.setAttribute(key, attrs[key]));
-      return el;
-    };
+    // A card needs a name as well as a logo slug: the slugs live in data-logos
+    // and the names sit beside them in .stack__tools, in the same order.
+    const cats = items.map((item) => ({
+      name: item.querySelector(".stack__name").textContent.trim(),
+      slugs: (item.dataset.logos || "").trim().split(/\s+/).filter(Boolean),
+      tools: item
+        .querySelector(".stack__tools")
+        .textContent.split("·")
+        .map((part) => part.trim())
+        .filter(Boolean)
+    }));
+
+    let active = 0;
+    let cards = [];
+    let rot = 0; // how far the hand has been shuffled
+    let dealTimer = 0;
+    let autoPaused = false;
+    let deckHovered = false;
+    let inView = false;
 
     if (totalLabel) {
       totalLabel.textContent = "/ " + String(items.length).padStart(2, "0");
     }
 
-    items.forEach((item, i) => {
-      const logos = (item.dataset.logos || "").trim().split(/\s+/).filter(Boolean);
-      const r = R0 + i * STEP;
-      const g = node("g", { class: "stack__ring" });
-      g.appendChild(node("circle", { cx: CX, cy: CY, r: r, class: "stack__orbit" }));
+    // Each transform is written here rather than in CSS so the fan can be
+    // measured against the stage: it fits a 400px column as well as a 540px one.
+    const layout = () => {
+      const n = cards.length;
+      if (!n || !deck) return;
+      const w = (stage && stage.clientWidth) || 420;
+      const cardW = Math.max(84, Math.min(152, w * 0.3));
+      const mid = (n - 1) / 2;
+      // fan as wide as looks right, but never wider than the stage, so a card's
+      // name is not buried under its neighbour and nothing spills on a phone
+      const gap = mid > 0 ? Math.min(cardW * 0.8, (w / 2 - cardW / 2 - 6) / mid) : cardW * 0.8;
+      deck.style.setProperty("--card-w", cardW + "px");
 
-      logos.forEach((slug, k) => {
-        const angle =
-          ((-90 + i * 22 + (360 * k) / logos.length) * Math.PI) / 180;
-        const x = CX + r * Math.cos(angle);
-        const y = CY + r * Math.sin(angle);
-        const chip = node("g", {
-          class: "stack__chip",
-          transform: "translate(" + x.toFixed(2) + " " + y.toFixed(2) + ")"
-        });
-        const inner = node("g", { class: "stack__chip-in" });
-        inner.appendChild(node("circle", { r: CHIP, class: "stack__chip-disc" }));
-        inner.appendChild(
-          node("use", {
-            href: "#lg-" + slug,
-            x: -LOGO / 2,
-            y: -LOGO / 2,
-            width: LOGO,
-            height: LOGO,
-            class: "stack__logo"
-          })
-        );
-        chip.appendChild(inner);
-        g.appendChild(chip);
+      cards.forEach((card, k) => {
+        const slot = ((((rot + k) % n) + n) % n);
+        const off = slot - mid;
+        const x = off * gap;
+        const y = Math.abs(off) * (cardW * 0.1) - cardW * 0.04;
+        card.style.zIndex = String(Math.round(n - Math.abs(off)));
+        card.style.transform =
+          "translate(-50%, -50%) translate(" +
+          x.toFixed(1) +
+          "px," +
+          y.toFixed(1) +
+          "px) rotate(" +
+          (off * 7).toFixed(2) +
+          "deg)";
+      });
+    };
+
+    const makeCard = (cat, k) => {
+      const card = document.createElement("div");
+      card.className = "stack__card";
+      card.style.setProperty("--i", String(k));
+
+      const face = document.createElement("div");
+      face.className = "stack__card-face";
+
+      const top = document.createElement("span");
+      top.className = "stack__card-top";
+      const num = document.createElement("b");
+      num.textContent = String(k + 1).padStart(2, "0");
+      const tick = document.createElement("i");
+      tick.setAttribute("aria-hidden", "true");
+      top.append(num, tick);
+
+      const svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("class", "stack__card-logo");
+      svg.setAttribute("aria-hidden", "true");
+      const use = document.createElementNS(NS, "use");
+      use.setAttribute("href", "#lg-" + cat.slugs[k]);
+      svg.appendChild(use);
+
+      const name = document.createElement("span");
+      name.className = "stack__card-name";
+      name.textContent = cat.tools[k] || cat.slugs[k];
+
+      face.append(top, svg, name);
+      card.appendChild(face);
+      return card;
+    };
+
+    const dealInto = (i) => {
+      const cat = cats[i];
+      cards = cat.slugs.map((slug, k) => makeCard(cat, k));
+      deck.replaceChildren(...cards);
+      layout();
+    };
+
+    // Every tool as a small tile, running on a belt under the hand. The track
+    // holds two identical passes, so the marquee loops without a seam.
+    const belt = stack.querySelector("[data-stack-belt]");
+    let chips = [];
+
+    if (belt) {
+      const makeChip = (cat, ci, k) => {
+        const chip = document.createElement("div");
+        chip.className = "stack__chip-card";
+        chip.dataset.cat = String(ci);
+
+        const num = document.createElement("b");
+        num.textContent = String(k + 1).padStart(2, "0");
+
+        const svg = document.createElementNS(NS, "svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("class", "stack__chip-logo");
+        const use = document.createElementNS(NS, "use");
+        use.setAttribute("href", "#lg-" + cat.slugs[k]);
+        svg.appendChild(use);
+
+        const label = document.createElement("span");
+        label.textContent = cat.tools[k] || cat.slugs[k];
+
+        chip.append(num, svg, label);
+        return chip;
+      };
+
+      const pass = [];
+      cats.forEach((cat, ci) => {
+        cat.slugs.forEach((slug, k) => pass.push(makeChip(cat, ci, k)));
       });
 
-      g.dataset.count = logos.length;
-      dial.appendChild(g);
-      rings.push(g);
-    });
+      chips = [...pass, ...pass.map((chip) => chip.cloneNode(true))];
+      chips.forEach((chip) => belt.appendChild(chip));
+      belt.classList.add("is-ready");
+    }
 
-    let active = 0;
-    let paused = false;
-    let inView = false;
+    const paintBelt = (i) => {
+      chips.forEach((chip) => chip.classList.toggle("is-on", Number(chip.dataset.cat) === i));
+    };
 
-    const setActive = (i) => {
+    // The old hand steps down and out before the new one is dealt in.
+    const deal = (i) => {
+      window.clearTimeout(dealTimer);
+      const leaving = cards.filter((card) => !card.dataset.leaving);
+      if (leaving.length && !prefersReduced) {
+        leaving.forEach((card) => {
+          card.dataset.leaving = "1";
+          card.style.opacity = "0";
+          card.style.transform += " translateY(30px) scale(0.94)";
+        });
+        dealTimer = window.setTimeout(() => {
+          dealInto(i);
+          dealTimer = 0;
+        }, 320);
+      } else {
+        dealInto(i);
+      }
+    };
+
+    const setActive = (i, firstRun) => {
       active = i;
-      rings.forEach((ring, k) => ring.classList.toggle("is-active", k === i));
       items.forEach((item, k) => item.classList.toggle("is-active", k === i));
       elIndex.textContent = String(i + 1).padStart(2, "0");
       if (elGhost) elGhost.textContent = String(i + 1).padStart(2, "0");
-      elName.textContent = items[i].querySelector(".stack__name").textContent.trim();
-      elCount.textContent = String(rings[i].dataset.count || 0).padStart(2, "0");
+      elName.textContent = cats[i].name;
+      elCount.textContent = String(cats[i].slugs.length).padStart(2, "0");
+      paintBelt(i);
+      if (firstRun) dealInto(i);
+      else deal(i);
     };
 
-    setActive(0);
+    // The hand cuts itself: a slot rotates forward, occasionally one runs back.
+    const shuffle = () => {
+      if (prefersReduced || deckHovered || cards.length < 2) return;
+      rot += Math.random() > 0.75 ? -1 : 1;
+      deck.classList.add("is-shuffling");
+      layout();
+      window.setTimeout(() => deck.classList.remove("is-shuffling"), 520);
+    };
+
+    setActive(0, true);
 
     if (!prefersReduced) {
       window.setInterval(() => {
-        if (!paused && inView) setActive((active + 1) % items.length);
-      }, 3800);
+        if (!autoPaused && inView) setActive((active + 1) % items.length);
+      }, 5600);
+      window.setInterval(() => {
+        if (inView) shuffle();
+      }, 2600);
     }
 
     items.forEach((item, i) => {
@@ -1229,10 +1343,22 @@
       btn.addEventListener("click", () => setActive(i));
     });
 
-    stack.addEventListener("pointerenter", () => { paused = true; });
-    stack.addEventListener("pointerleave", () => { paused = false; });
-    stack.addEventListener("focusin", () => { paused = true; });
-    stack.addEventListener("focusout", () => { paused = false; });
+    stack.addEventListener("pointerenter", () => { autoPaused = true; });
+    stack.addEventListener("pointerleave", () => { autoPaused = false; });
+    stack.addEventListener("focusin", () => { autoPaused = true; });
+    stack.addEventListener("focusout", () => { autoPaused = false; });
+
+    // Resting on a card holds the shuffle so it can be read.
+    if (stage) {
+      stage.addEventListener("pointerenter", () => { deckHovered = true; });
+      stage.addEventListener("pointerleave", () => { deckHovered = false; });
+    }
+
+    if (stage && "ResizeObserver" in window) {
+      new ResizeObserver(() => layout()).observe(stage);
+    } else {
+      window.addEventListener("resize", layout);
+    }
 
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver(

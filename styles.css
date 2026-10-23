@@ -2548,19 +2548,21 @@ section[id] {
 .stack__viz {
   width: 100%;
   max-width: 540px;
+  /* the belt track is max-content wide; without this the column's automatic
+     minimum would be the whole track and push the panel off a phone screen */
+  min-width: 0;
   margin-inline: auto;
 }
-.stack__orbit-wrap {
+.stack__stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 1.15;
 }
-.stack__dial { position: relative; z-index: 1; width: 100%; height: 100%; }
 
 .stack__ghost {
   position: absolute;
   z-index: 0;
-  top: 50%;
+  top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-family: var(--display);
@@ -2574,35 +2576,151 @@ section[id] {
   user-select: none;
 }
 
-.stack__orbit {
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 1;
-  transition: stroke 0.5s;
+/* A hand of tool cards: script.js writes each card's transform, measuring the
+   stage so the fan fits a narrow column as well as the wide one. */
+.stack__deck {
+  position: absolute;
+  inset: 0;
+  --card-w: clamp(92px, 30%, 152px);
 }
-.stack__ring.is-active .stack__orbit { stroke: rgba(204, 255, 0, 0.42); }
+.stack__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--card-w);
+  aspect-ratio: 0.72;
+  transition: transform 0.62s var(--ease), opacity 0.34s var(--ease);
+  transition-delay: calc(var(--i) * 0.035s);
+  will-change: transform;
+}
+.stack__card-face {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 11px 11px 13px;
+  background:
+    linear-gradient(158deg, rgba(244, 241, 232, 0.06), rgba(244, 241, 232, 0) 62%),
+    var(--ink-2);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.42);
+  transition: border-color 0.4s;
+  animation:
+    deal-in 0.5s var(--ease) calc(var(--i) * 0.07s) backwards,
+    sway 5.6s ease-in-out calc(var(--i) * 0.07s + 0.52s) infinite;
+}
+.stack__deck.is-shuffling .stack__card-face { border-color: rgba(204, 255, 0, 0.5); }
 
-.stack__chip-in {
-  transform-origin: 0 0;
-  transition: transform 0.5s var(--ease);
+.stack__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  color: var(--paper-faint);
 }
-.stack__ring.is-active .stack__chip-in { transform: scale(1.14); }
+.stack__card-top b { font-weight: 500; }
+.stack__card-top i {
+  width: 14px;
+  height: 2px;
+  background: var(--acid);
+  opacity: 0.7;
+}
+.stack__card-logo {
+  width: clamp(26px, 46%, 42px);
+  align-self: center;
+  justify-self: center;
+  color: var(--paper);
+  fill: currentColor;
+  transition: color 0.4s;
+}
+.stack__card-name {
+  font-family: var(--display);
+  font-size: clamp(0.7rem, 1.05vw, 0.86rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--paper);
+}
 
-.stack__chip-disc {
-  fill: var(--ink-2);
-  stroke: var(--line-strong);
-  stroke-width: 1;
-  transition: fill 0.5s, stroke 0.5s;
+/* Every tool in a small tile, running on a belt under the hand */
+.stack__belt {
+  margin-top: 15px;
+  padding: 11px 0;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
 }
-.stack__logo {
+.stack__belt-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+  animation-play-state: paused;
+}
+.stack__belt-track.is-ready { animation-play-state: running; }
+.stack__belt:hover .stack__belt-track { animation-play-state: paused; }
+
+.stack__chip-card {
+  flex: none;
+  margin-right: 11px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 142px;
+  max-width: 200px;
+  padding: 8px 11px;
+  background:
+    linear-gradient(158deg, rgba(244, 241, 232, 0.05), rgba(244, 241, 232, 0) 70%),
+    var(--ink-2);
+  border: 1px solid var(--line);
+  transition: border-color 0.4s, background-color 0.4s;
+}
+.stack__chip-card.is-on { border-color: rgba(204, 255, 0, 0.55); }
+.stack__chip-card b {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--paper-faint);
+}
+.stack__chip-card .stack__chip-logo {
+  flex: none;
+  width: 17px;
+  height: 17px;
   color: var(--paper-dim);
   fill: currentColor;
-  pointer-events: none;
-  transition: color 0.5s, opacity 0.5s;
+  transition: color 0.4s;
 }
-.stack__ring:not(.is-active) .stack__logo { opacity: 0.82; }
-.stack__ring.is-active .stack__chip-disc { fill: rgba(204, 255, 0, 0.12); stroke: var(--acid); }
-.stack__ring.is-active .stack__logo { color: var(--acid); opacity: 1; }
+.stack__chip-card.is-on .stack__chip-logo { color: var(--acid); }
+.stack__chip-card span {
+  min-width: 0;
+  font-family: var(--display);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--paper-dim);
+  transition: color 0.4s;
+}
+.stack__chip-card.is-on span { color: var(--paper); }
+
+@keyframes deal-in {
+  from { opacity: 0; transform: translateY(34px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-1.6deg) translateY(0); }
+  50%      { transform: rotate(1.6deg) translateY(-7px); }
+}
 
 .stack__readout {
   display: flex;
@@ -2728,7 +2846,7 @@ section[id] {
   .edu__row { grid-template-columns: 1fr; gap: 14px; }
   .edu__chips { justify-content: flex-start; }
   .awards { grid-template-columns: 1fr; gap: 36px; }
-  .stack { grid-template-columns: 1fr; gap: 6px; }
+  .stack { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .stack__viz { max-width: 400px; }
   .stack__name-out { max-width: 104px; }
 }
@@ -3138,6 +3256,13 @@ html.motion-tilt .mini:not(.mini--static):hover {
   .feature:hover .media__dark img { transform: none; }
   .ticker__track,
   .contact__marquee-track { animation: none; }
+  /* the belt becomes something you scroll yourself */
+  .stack__belt {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .stack__belt-track { animation: none; }
 
   .media__status .dot,
   .filter-img,

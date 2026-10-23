@@ -11,15 +11,16 @@ name, and as you scroll it slides right, shrinks into the photo window of a
 hanging ID badge and dissolves into the headshot, while the intro copy fades in.
 The badge can be flipped by clicking it, and its reverse lists date of birth,
 location and gender. Below that, the experience cards open
-in place, projects animate underneath them, the toolkit is a radial map of tool
-logos, and the contact block has a working message form followed by bare icon
-links to email, phone, GitHub and LinkedIn.
+in place, projects animate underneath them, the toolkit deals a fanned hand of tool
+cards above a belt of every tool it knows, and the contact block has a working
+message form followed by bare icon links to email, phone, GitHub and LinkedIn.
 
 The projects section is built from the public GitHub repositories of
 [janaarundinesh](https://github.com/janaarundinesh): two featured projects with
 live, self-drawn animations next to the real benchmark and simulation figures,
 and three smaller project cards. Education, awards and the toolkit are separate
-sections; the toolkit is a radial dial that maps one ring to each category.
+sections; the toolkit deals a hand of tool cards for whichever category you hover
+or click, above a belt running every tool there is.
 
 ## Run it locally
 
@@ -39,7 +40,7 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 | --- | --- |
 | `index.html` | All content and structure: hero, about, experience, projects, education, awards, toolkit, contact. |
 | `styles.css` | The whole visual system — design tokens at the top, then sections, responsive rules, reduced-motion and print styles. |
-| `script.js` | Hero canvas and the welcome→badge scroll morph, the ID badge flip, reveals, counters, mobile menu, the experience card accordion, custom cursor, magnetic buttons, the FILTER2 sweep animation, figure tabs, the toolkit logo dial, project-card glow, anchor scrolling and the contact form. |
+| `script.js` | Hero canvas and the welcome→badge scroll morph, the ID badge flip, reveals, counters, mobile menu, the experience card accordion, custom cursor, magnetic buttons, the FILTER2 sweep animation, figure tabs, the toolkit card deck and its running belt, project-card glow, anchor scrolling and the contact form. |
 | `motion.js` | Optional cinematic layer: GSAP entrance, section cues, the experience-card stagger, pinned showcases, scroll-driven figure scenes, pointer tilt. Safe to remove — the page falls back to its CSS motion. |
 | `assets/vendor/` | Vendored `gsap.min.js` and `ScrollTrigger.min.js` (3.13.0), so the page loads no third-party script at runtime. |
 | `assets/portrait.jpg` | 933 × 1100 web-optimised portrait (plus `portrait-640.jpg` for small screens). |
@@ -81,10 +82,12 @@ section you want:
 - `<!-- ============ EDUCATION ============ -->` — one `.edu__row` per degree.
 - `<!-- ============ AWARDS ============ -->` — publications and awards side by side.
 - `<!-- ============ TOOLKIT ============ -->` — a `.stack` block. Each `.stack__item`
-  lists its tools as logo slugs in `data-logos` (`python cmake docker …`); the dial
-  draws one ring per item and one chip per slug. The slugs point at `<symbol id="lg-…">`
-  entries in the inline icon sprite at the top of `<body>`; add a 24×24 symbol there
-  to add a logo. `.stack__tag` is the count and `.stack__tools` is the expanded row.
+  lists its tools as logo slugs in `data-logos` (`python cmake docker …`) and, in the
+  same order, as names in `.stack__tools` (`CMake · Jenkins · Git`). The script builds
+  a fanned hand of cards from the active item — one card per slug, named from
+  `.stack__tools` — and a belt of every tool, twice over, so it loops seamlessly. The
+  slugs point at `<symbol id="lg-…">` entries in the inline icon sprite at the top of
+  `<body>`; add a 24×24 symbol there to add a logo. `.stack__tag` is the count.
 - `<!-- ============ CONTACT ============ -->` — the message form (headed "Get in
   touch") plus four bare icon links — email, phone, GitHub, LinkedIn — centred
   above the closing marquee and built from the sprite symbols. The
@@ -265,8 +268,8 @@ old preview.
 
 - The site works without JavaScript: the hero intro is pure CSS and the content
   is all in the HTML. Without JS you lose the canvas, welcome morph, reveal
-  animations and counters, and the toolkit dial is hidden (the category list
-  remains). The contact form falls back to a `mailto:` post.
+  animations and counters, and the toolkit deck and belt are hidden (the category
+  list remains). The contact form falls back to a `mailto:` post.
 - `prefers-reduced-motion` is respected: the motion layer is skipped entirely
   (no tweens, pins or tilt), the CSS entrance runs, and `.reveal` elements are
   fully readable.
