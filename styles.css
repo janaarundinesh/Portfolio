@@ -775,6 +775,44 @@ svg { display: block; }
   color: var(--paper);
 }
 
+.hero__badge-qr {
+  display: grid;
+  justify-items: center;
+  gap: 11px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(244, 241, 232, 0.14);
+}
+.hero__badge-qr img {
+  width: 118px;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px rgba(244, 241, 232, 0.2), 0 10px 22px rgba(0, 0, 0, 0.4);
+}
+.hero__badge-qr-copy {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  text-align: center;
+}
+.hero__badge-qr-label {
+  font-family: var(--mono);
+  font-size: 7.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--acid);
+}
+.hero__badge-qr-hint {
+  font-family: var(--mono);
+  font-size: 7.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+}
+
 .hero__badge-flip {
   position: absolute;
   inset: 0;
@@ -3176,6 +3214,10 @@ html.motion-tilt .mini:not(.mini--static):hover {
   .hero__badge-meta { padding: 9px 6px 10px; }
   .hero__badge-name { font-size: 14px; }
   .hero__badge-role { font-size: 8px; }
+  .hero__badge-spec-row { padding: 12px 2px; }
+  .hero__badge-spec dd { font-size: 0.95rem; }
+  .hero__badge-qr { margin-top: 20px; padding-top: 16px; gap: 9px; }
+  .hero__badge-qr img { width: 110px; }
 
   .hero__actions { gap: 10px; }
   .btn { padding: 13px 20px; font-size: 13px; }

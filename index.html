@@ -221,10 +221,6 @@
             <div class="hero__badge-face hero__badge-back" aria-hidden="true">
               <dl class="hero__badge-spec">
                 <div class="hero__badge-spec-row">
-                  <dt>Date of birth</dt>
-                  <dd>02 May 2000</dd>
-                </div>
-                <div class="hero__badge-spec-row">
                   <dt>Location</dt>
                   <dd>Wuppertal, DE</dd>
                 </div>
@@ -233,6 +229,14 @@
                   <dd>Male</dd>
                 </div>
               </dl>
+
+              <div class="hero__badge-qr">
+                <img src="assets/qr-linkedin.svg" alt="" width="118" height="118" decoding="async" />
+                <span class="hero__badge-qr-copy">
+                  <span class="hero__badge-qr-label">LinkedIn</span>
+                  <span class="hero__badge-qr-hint">Scan to connect</span>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -303,21 +307,24 @@
     <div class="about">
       <div class="about__statement">
         <p class="lede reveal">
-          I&rsquo;m a software engineer with one year of professional experience
-          writing C++ and Python for autonomous-driving systems at <em>Aptiv</em> —
-          obstacle detection, ROSbag data processing, sensor-data analysis, and
-          the software quality assurance that keeps automotive code reviewable.
+          I&rsquo;m a software engineer and M.Sc. candidate in Computer Simulation
+          in Science at <em>Bergische Universität Wuppertal</em>, graduating in
+          February 2027.
         </p>
         <p class="reveal" data-delay="1">
-          Currently finishing an M.Sc. in Computer Simulation in Science at
-          <em>Bergische Universität Wuppertal</em>. My work sits where performance
-          meets correctness: MPI and CUDA parallelisation, linear-time geometry,
-          and benchmarks disciplined enough to separate a better algorithm from
-          a faster machine.
+          My master&rsquo;s thesis on non-dominance filtering is where the two halves
+          of the work meet: computational geometry algorithms in C++17, MPI
+          parallelisation, correctness validation, and runtime-scaling benchmarks
+          that hold up under measurement.
         </p>
         <p class="reveal" data-delay="2">
-          Seeking a full-time software engineering role in C++ development,
-          automotive software, or performance-oriented applications.
+          Professionally, a year at <em>Aptiv</em> writing C++ and Python for
+          autonomous-driving systems — obstacle detection, sensor-data analysis,
+          and the software quality checks that keep automotive code reviewable.
+        </p>
+        <p class="reveal" data-delay="3">
+          Looking for full-time work in scientific software, parallel and
+          high-performance computing, or simulation engineering.
         </p>
       </div>
 
@@ -1029,7 +1036,7 @@
     <div class="contact__inner">
       <p class="eyebrow reveal">
         <span class="dot dot--pulse" aria-hidden="true"></span>
-        Open to full-time roles from 2027 — and internships before that
+        Open to full-time roles
       </p>
 
       <h2 class="contact__title reveal">
@@ -1068,7 +1075,7 @@
 
             <label class="field">
               <span class="field__label">Message</span>
-              <textarea class="field__input" name="message" rows="4" required placeholder="What are you building?"></textarea>
+              <textarea class="field__input" name="message" rows="4" required placeholder="Write your message here..."></textarea>
             </label>
 
             <div class="mail__foot">

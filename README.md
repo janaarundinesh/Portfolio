@@ -47,6 +47,7 @@ relative asset paths and `srcset` behave exactly as they will when deployed.
 | `assets/welcome.jpg` | The full-body spotlight photo used on the welcome screen. |
 | `assets/welcome-mobile.jpg` | Optional 900 px version of the welcome photo; the page no longer requests it. |
 | `assets/preview.jpeg` | The 1200 × 630 social preview card (`og:image` / `twitter:image`) used when the link is shared. |
+| `assets/qr-linkedin.svg` | The QR code on the back of the ID badge; it scans to the LinkedIn profile. |
 | `tools/social-card.html` | The page the preview card is rendered from. Never linked from the site. |
 | `assets/Arun_Dinesh_Jana_CV.pdf` | The downloadable CV linked from the hero. |
 | `assets/projects/` | Figures pulled from the GitHub repos: `thesis-runtime-5d.jpg`, `fhp-flow.jpg`, plus the derived animation frames `fhp-thermal.webp` and the filter stills in `assets/projects/filter-*.jpg`. |
@@ -62,8 +63,10 @@ section you want:
   morph targets `.hero__portrait-frame`, the photo window inside the badge, using
   the frame's on-screen centre, so the nested card and its tilt do not break it.
   `.hero__badge-flip` covers the card and toggles `.is-flipped`; the lanyard and
-  clip are decorative siblings of the flipping card. On screens under 981 px the
-  morph is skipped and the badge is the hero portrait on its own.
+  clip are decorative siblings of the flipping card. The card's back
+  (`.hero__badge-back`) lists location and gender, and ends in the LinkedIn QR
+  code. On screens under 981 px the morph is skipped and the badge is the hero
+  portrait on its own.
 - `<!-- ============ ABOUT ============ -->` — statement, facts column, four stat counters.
   Counter values live in `data-count` (and optional `data-suffix`).
 - `<!-- ============ EXPERIENCE ============ -->` — one `<article class="xp-card">` per role,
@@ -126,6 +129,18 @@ is plenty) to `assets/portrait.jpg`, and optionally a ~640 px wide version to
 `assets/portrait-640.jpg`. Keep the `width`/`height` attributes on the `<img>`
 in sync. The badge crops the photo to a 4:5 window, so keep the face centred near
 the top. The welcome photo is `assets/welcome.jpg` (any tall portrait crop works).
+
+The QR on the card back is `assets/qr-linkedin.svg`, drawn dark-on-paper so it
+stays scannable against the badge. To regenerate it after a profile change:
+
+```bash
+python3 -m pip install segno
+segno "https://www.linkedin.com/in/jana-arun-dinesh" --scale 1 --border 3 \
+  --dark "#07080a" --light "#f4f1e8" --output assets/qr-linkedin.svg
+```
+
+Keep the three-module quiet zone (`--border 3`) — scanners need it — and check a
+phone can read it at the size the card renders.
 
 ### Turning on the contact form
 
