@@ -1038,16 +1038,21 @@
       </h2>
 
       <div class="contact__body reveal" data-delay="1">
-        <form class="mail" data-mail action="mailto:janaarundinesh@gmail.com" method="post" enctype="text/plain">
+        <form class="mail" data-mail action="https://api.web3forms.com/submit" method="post">
             <div class="mail__head">
               <span class="mono-label">Get in touch</span>
               <p class="mail__intro">Straight to my inbox</p>
             </div>
 
-            <!-- Web3Forms access key — get one free at https://web3forms.com and paste it in value="" -->
-            <input type="hidden" name="access_key" value="" data-mail-key />
+            <!-- The one thing this form needs: a free access key from https://web3forms.com
+                 (enter janaarundinesh@gmail.com, copy the key from the email) and paste it
+                 into value="" below. Until then the form still hands the message to the
+                 visitor's mail app instead of sending it. -->
+            <input type="hidden" name="access_key" value="add61a54-4efe-4620-ae8b-081d80ca8659" data-mail-key />
             <input type="hidden" name="subject" value="Portfolio enquiry" />
             <input type="hidden" name="from_name" value="arun dinesh jana — portfolio" />
+            <!-- where a no-JavaScript submission lands afterwards -->
+            <input type="hidden" name="redirect" value="https://janaarundinesh.github.io/Portfolio/?sent=1#contact" />
             <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" />
 
             <div class="mail__row">
